@@ -641,6 +641,10 @@ Test('duad filter second', () => {
     assert.deepEqual([[1,2]], Array.from(Duad.filter_second(even)([[1,1],[1,2],[1,3]])))
 })
 
+Test('duad combine', () => {
+    assert.equal(3, Duad.combine(add)([1,2]))
+})
+
 Test('split', () => {
     const x = '1 2 3'
     assert.deepEqual(x.split(' '), split(' ')(x))

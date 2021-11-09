@@ -652,6 +652,7 @@ Duad.map_first = f => map(x => [f(x[0]), x[1]])
 Duad.map_second = f => map(x => [x[0], f(x[1])])
 Duad.filter_first = f => filter(B(f)(first))
 Duad.filter_second = f => filter(B(f)(second))
+Duad.combine = f => S(f)(first)(second)
 
 
 // =======
