@@ -523,3 +523,163 @@ Test('plus_mod', () => {
     assert.deepEqual(10, plus_mod(5)(7))
     assert.deepEqual(10, plus_mod(5)(8))
 })
+
+Test('rollover', () => {
+    assert.equal(3, rollover(0, 3)(-1))
+    assert.equal(0, rollover(0, 3)(4))
+})
+
+Test('naturals', () => {
+    let i = 0
+    for (const x of naturals()) {
+        assert.equal(i, x)
+        i++
+        if (i > 10) break
+    }
+})
+
+Test('Range', () => {
+    const rng = new Range(0, 10)
+    assert.equal(true, rng.includes(0))
+    assert.equal(true, rng.includes(10))
+    assert.equal(true, rng.includes(5))
+    assert.equal(false, rng.includes(11))
+    assert.equal(false, rng.includes(-0.01))
+})
+
+Test('probability', () => {
+    assert.equal(0.01, probability(1))
+})
+
+Test('percentage', () => {
+    assert.equal(1, percentage(0.01))
+})
+
+Test('isIterable', () => {
+    assert.equal(false, isIterable(false))
+    assert.equal(false, isIterable({}))
+    assert.equal(true, isIterable(''))
+    assert.equal(true, isIterable([]))
+    assert.equal(true, isIterable(new Map()))
+    assert.equal(true, isIterable(new Set()))
+    assert.equal(true, isIterable((function* () {})()))
+})
+
+Test('iter', () => {
+    assert.equal(true, 'next' in iter(''))
+    assert.equal(true, 'next' in iter([]))
+    assert.equal(true, 'next' in iter(new Map()))
+    assert.equal(true, 'next' in iter(new Set()))
+})
+
+Test('inside', () => {
+    assert.equal(false, inside(null)(1))
+    assert.equal(true, inside('32123')('1'))
+    assert.equal(true, inside([3,2,1])(1))
+    assert.equal(true, inside(new Set([3,2,1]))(1))
+    assert.equal(true, inside(new Map([[1, 1], [2, 2], [3, 3]]))(1))
+})
+
+Test('outside', () => {
+    assert.equal(true, outside(null)(4))
+    assert.equal(true, outside('32123')('4'))
+    assert.equal(true, outside([3,2,1])(4))
+    assert.equal(false, outside(new Set([3,2,1]))(3))
+    assert.equal(true, outside(new Map([[1, 1], [2, 2], [3, 3]]))(4))
+})
+
+Test('average', () => {
+    assert.equal(2, average([1,2,3]))
+    assert.equal(2, average(new Set([1,2,3])))
+})
+
+Test('next', () => {
+    const it = iter([1,2,3])
+    assert.equal(1, next(it))
+    assert.equal(2, next(it))
+    assert.equal(3, next(it))
+})
+
+Test('early', () => {
+    assert.equal(null, early(is(null))([1,2,3,4,null,5,6,7]))
+    assert.equal(7, early(is(null))([1,2,3,4,5,6,7]))
+})
+
+Test('union', () => {
+    assert.deepEqual(new Set([1,2,3,4,5]), union([ new Set([1,2]), new Set([1,3]), new Set([2,3,4,5]) ]))
+})
+
+Test('duad', () => {
+    assert.deepEqual([1,2], Duad(1,2))
+})
+
+Test('duad prefix', () => {
+    assert.deepEqual([[1,1],[1,2],[1,3]], [1,2,3].map(Duad.prefix(1)))
+})
+
+Test('duad suffix', () => {
+    assert.deepEqual([[1,1],[2,1],[3,1]], [1,2,3].map(Duad.suffix(1)))
+})
+
+Test('duad map first', () => {
+    const inc = x => x+1
+    assert.deepEqual([[2,1],[2,2],[2,3]], Array.from(Duad.map_first(inc)([[1,1],[1,2],[1,3]])))
+})
+
+Test('duad map second', () => {
+    const inc = x => x+1
+    assert.deepEqual([[1,2],[2,2],[3,2]], Array.from(Duad.map_second(inc)([[1,1],[2,1],[3,1]])))
+})
+
+Test('duad filter first', () => {
+    const even = x => x % 2 === 0
+    assert.deepEqual([[2,1]], Array.from(Duad.filter_first(even)([[1,1],[2,1],[3,1]])))
+})
+
+Test('duad filter second', () => {
+    const even = x => x % 2 === 0
+    assert.deepEqual([[1,2]], Array.from(Duad.filter_second(even)([[1,1],[1,2],[1,3]])))
+})
+
+Test('split', () => {
+    const x = '1 2 3'
+    assert.deepEqual(x.split(' '), split(' ')(x))
+})
+
+Test('trim', () => {
+    const x = '      1234 '
+    assert.equal(x.trim(), trim(x))
+})
+
+Test('startsWith', () => {
+    const x = 'abcd'
+    assert.equal(x.startsWith('ab'), startsWith('ab')(x))
+})
+
+Test('endsWith', () => {
+    const x = 'abcd'
+    assert.equal(x.endsWith('cd'), endsWith('cd')(x))
+})
+
+Test('startsWithAny', () => {
+    const x = 'America'
+    assert.equal(true, startsWithAny(['yo', 'lo', 'Amer'])(x))
+})
+
+Test('endsWithAny', () => {
+    const x = 'America'
+    assert.equal(true, endsWithAny(['yo', 'lo', 'ica'])(x))
+})
+
+Test('getMany', () => {
+    assert.deepEqual([1, 2, 3], getMany('x', 'y', 'z')({ x: 1, y: 2, z: 3 }))
+})
+
+Test('has_one', () => {
+    assert.equal(true, has_one('345')('123'))
+    assert.equal(false, has_one('345')('12'))
+})
+
+Test('print', () => {
+    assert.equal('test', print('test'))
+})

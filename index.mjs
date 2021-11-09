@@ -361,10 +361,11 @@ export const rollover = (low, high) => x => {
 export function* naturals() { let i = 0 ; while (true) yield i++ }
 
 export class Range {
-    constuctor(min, max) {
-        self.min = min
-        self.max = max
+    constructor(min, max) {
+        this.min = min
+        this.max = max
     }
+
     includes(x) {
         return between(x, this.min, this.max)
     }
@@ -379,7 +380,7 @@ export const percentage = mult(100)
 // =========
 
 export const StopIteration = Symbol()
-export const isIterable = x => x && x[Symbol.iterator] instanceof Function
+export const isIterable = x => x !== null && x !== undefined && x[Symbol.iterator] instanceof Function
 export const iter = x => x[Symbol.iterator]()
 
 export const inside = xs => x => {
@@ -496,15 +497,15 @@ export function len(x) {
             break
 
         case Object:
+            return Object.keys(x).length
+            break
+
+        default:
             if (isIterable(x)) {
                 let i = 0
                 for (const x of xs) i++
                 return i
             } else return 0
-            break
-
-        default:
-            return 0
             break
     }
 }
@@ -644,9 +645,9 @@ export const on_ctrl_enter = when(x => x.keyCode === 13 && x.ctrlKey)
 // Duad
 // ====
 
-const Duad = (a, b) => [a, b]
+export const Duad = (a, b) => [a, b]
 Duad.prefix = a => b => [a, b]
-Duad.suffix = b => a => [b, a]
+Duad.suffix = a => b => [b, a]
 Duad.map_first = f => map(x => [f(x[0]), x[1]])
 Duad.map_second = f => map(x => [x[0], f(x[1])])
 Duad.filter_first = f => filter(B(f)(first))
@@ -670,7 +671,7 @@ export const str = x => ''+x
 // Et cetera
 // =========
 
-export const getMany = ks => x => ks.map(k => get(k)(x))
+export const getMany = (...ks) => x => ks.map(k => get(k)(x))
 
 // Returns true if an array xs has at least one item from ys. In other
 // words, checks if the intersection of the two arrays is non-empty.
