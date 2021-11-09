@@ -73,14 +73,13 @@ export const by = f => (a,b) => f(a) < f(b) ? -1 : 1
 // simply returns false
 export const do_nothing = K(false)
 
-
 // Helps us flatten a "callback hell" tree without using promises
 // waterfall(
 //     (f) => A(a, b, f),
 //     (f, err, x) => { if (err) throw err; else B(x) },
 //     (f, err, x) => { if (err) throw err; else console.log(x) },
 // )
-export const waterfall = (...fs) {
+export function waterfall(...fs) {
     let i = 0
     const f = (...xs) => (fs[++i] || do_nothing)(f, ...xs)
     fs[0](f)
@@ -100,7 +99,6 @@ export const waterfall = (...fs) {
 export const get = (...ks) => x => {
     if (ks.length === 1) return get_(ks[0], x)
     else return ks.reduce(Cu(get_), x)
-    else return ks.reduce((x, k) => get_(k, x), x)
 }
 
 function get_(k, x) {
@@ -116,10 +114,7 @@ export const set = k => v => tap(o => o[k] = v)
 export const get_from = C(get)
 
 // Like get, but only fetches array items and object properties.
-export const pluck = k => x =>
-    if (x === null || x === undefined) return null
-    else return x[k]
-}
+export const pluck = k => x => (x === null || x === undefined) ? null : x[k]
 
 export const change = (f, ...keys) => tap(x => {
     if (keys.length === 0) keys = Object.keys(x)
@@ -143,7 +138,7 @@ export const object_filter = f => xs => Object.fromEntries(Object.entries(xs).fi
 // ========
 
 export const and = a => b => a && b
-export const or = a => b => a ||
+export const or = a => b => a || b
 
 
 // =============
@@ -178,8 +173,8 @@ export const last = x => x[x.length-1]
 const Duad = (a, b) => [a, b]
 Duad.prefix = a => b => [a, b]
 Duad.suffix = b => a => [b, a]
-Duad.map_first => f => map(x => [f(x[0]), x[1]])
-Duad.map_second => f => map(x => [x[0], f(x[1])])
+Duad.map_first = f => map(x => [f(x[0]), x[1]])
+Duad.map_second = f => map(x => [x[0], f(x[1])])
 Duad.filter_first = f => filter(B(f)(first))
 Duad.filter_second = f => filter(B(f)(second))
 
@@ -189,13 +184,13 @@ Duad.filter_second = f => filter(B(f)(second))
 // ========
 
 export const not = a => !a
-export const is => a => b => a === b
-export const isnt => B1(not)(is)
+export const is = a => b => a === b
+export const isnt = B1(not)(is)
 export const null_undefined = x => x === null || x === undefined
 export const defined = B(not)(null_undefined)
 export const AND = fs => x => fs.every(T(x))
 export const OR = fs => x => fs.some(T(x))
-export const instance = a => b => b instanceof =>
+export const instance = a => b => b instanceof a
 
 // tests for deep equality
 export function equal (a, b) {
@@ -262,7 +257,7 @@ export const cond = (...fs) => x => {
 // Iterables
 // =========
 
-export const StopIteration = new Symbol()
+export const StopIteration = Symbol()
 export const isIterable = x => x && x[Symbol.iterator] instanceof Function
 export const iter = x => x[Symbol.iterator]()
 
@@ -298,12 +293,26 @@ export const flatten = n => function* (xs) {
 export function* enumerate (xs) { let i = 0 ; for (const x of xs) yield [i++, x] }
 export const foldl = f => i => xs => { let a = i ; for (const x of xs) a = f(a)(x) ; return a }
 export const foldr = f => i => xs => { let a = i ; for (const x of xs) a = f(x)(a) ; return a }
-export const scanl = f => i => function* (xs) { let a = i ; for (const x of xs) yield a = f(a)(x) }
-export const scanr = f => i => function* (xs) { let a = i ; for (const x of xs) yield a = f(x)(a) }
+
+export const scanl = f => i => function* (xs) {
+    let a = i
+    for (const x of xs) {
+        a = f(a)(x)
+        yield a
+    }
+}
+export const scanr = f => i => function* (xs) {
+    let a = i
+    for (const x of xs) {
+        a = f(x)(a)
+        yield a
+    }
+}
+
 export const map = f => function* (xs) { for (const x of xs) yield f(x) }
 export const filter = f => function* (xs) { for (const x of xs) if (f(x)) yield x }
 export const find = f => xs => { for (const x of xs) if (f(x)) return x ; return null }
-export const find_index = f => xs { for (const [i, x] of enumerate(xs)) if (f(x)) return i ; return null }
+export const find_index = f => xs => { for (const [i, x] of enumerate(xs)) if (f(x)) return i ; return null }
 export const every = f => xs => { for (const x of xs) if (!f(x)) return false ; return true }
 export const some = f => xs => { for (const x of xs) if (f(x)) return true ; return false }
 export function* seq(start, end) { for (let x = start; x <= end; x++) yield x }
@@ -358,23 +367,30 @@ export function len(x) {
         case String:
         case Array:
             return x.length
+            break
+
         case Map:
         case Set:
             return x.size
+            break
+
         case Object:
             if (isIterable(x)) {
                 let i = 0
                 for (const x of xs) i++
                 return i
             } else return 0
+            break
+
         default:
             return 0
+            break
     }
 }
 
 export const average = S(div)(len)(sum)
 
-export const batch (f, a, n=1000) => xs => new Promise(yes => {
+export const batch = (f, a, n=1000) => xs => new Promise(yes => {
     tick(iter(xs))
     function tick(xs) {
         let i = 0
@@ -406,35 +422,43 @@ export const early = f => xs => {
 // Mathematics
 // ===========
 
-export const between (x, low, high) => x >= low && x <= high
-export const cbetween (low, high) => x => between(x, low, high)
+export function between (x, low, high) { return x >= low && x <= high }
+export const cbetween = (low, high) => x => between(x, low, high)
 export const gt = a => b => b > a
 export const gte = a => b => b >= a
 export const lt = a => b => b < a
 export const lte = a => b => b <= a
 export const pow = a => b => b**a
 export const mult = a => b => a*b
-export const div = a => b => b/=>
+export const div = a => b => b/a
 
-export const add => a => b => {
+export const add = a => b => {
     if (a === null || a === undefined || b === null || b === undefined || a.constructor !== b.constructor)
         return null
     else switch(a.constructor) {
         case Number:
         case String: return a + b
+
         case Array: return [...a, ...b]
-        case Map:
+
+        case Map: {
             const n = new Map(Array.from(a.entries()))
             for (const [k, v] of b.entries()) n.set(k, v)
             return n
-        case Set:
+        }
+
+        case Set: {
             const n = new Set(a)
             for (const x of b) n.add(x)
             return n
+        }
+
         case Object:
             if (isIterable(a) && isIterable(b))
                 return (function* () { yield* a ; yield* b })()
             else return { ...a, ...b }
+            break
+
         default: return null
     }
 }
