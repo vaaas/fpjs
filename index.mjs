@@ -189,7 +189,7 @@ export const join = d => xs => {
 
 export const sort = f => x => x.constructor === Array ? x.sort(f) : Array.from(x).sort(f)
 export const reverse = x => Array.from(x).reverse()
-export const objectify = f => reduce(x => tap(o => o[f(x)] = x))({})
+export const objectify = f => foldr(x => tap(o => o[f(x)] = x))({})
 
 export function swap (xs, a, b) {
     const c = xs[a]
@@ -209,7 +209,7 @@ export const group = (...fs) => xs => {
 }
 
 function group_(f, xs) {
-    return reduce(x => tap(groups => {
+    return foldr(x => tap(groups => {
         const g = f(x)
         if (!groups.hasOwnProperty(g)) groups[g] = []
         groups[g].push(x)
@@ -308,6 +308,7 @@ export const div = a => b => b/a
 export const add = a => b => {
     if (a === null || a === undefined || b === null || b === undefined || a.constructor !== b.constructor)
         return null
+
     else switch(a.constructor) {
         case Number:
         case String: return a + b
@@ -353,6 +354,7 @@ export const rollover = (low, high) => x => {
     else if (x > high) return low
     else return x
 }
+
 export function* naturals() { let i = 0 ; while (true) yield i++ }
 
 export class Range {
