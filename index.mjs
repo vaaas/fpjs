@@ -85,6 +85,7 @@ export function waterfall(...fs) {
     fs[0](f)
 }
 
+export const bind = f => x => f.bind(x)
 
 
 // ===============
@@ -162,11 +163,63 @@ function* _combine_fn(head=[], fs=[]) {
 export const first = x => x[0]
 export const second = x => x[1]
 export const last = x => x[x.length-1]
+export const head = x => x.slice(0, x.length - 1)
+export const tail = x => x.slice(1)
+export const slice = (a, b=Infinity) => xs => xs.slice(a, b)
+export const array_map = f => x => x.map(f)
+export const array_filter = f => x => x.filter(f)
+export const array_splice = (a, b) => x => x.splice(a, b)
+export const array_take = i => x => x.splice(i, 1)
+export const array_get = B(array_map)(get)
+export const array_push = x => tap(xs => xs.push(x))
+export const pick = x => x[randint(0, x.length)]
+
+export function construct(f, n) {
+    const x = []
+    for (let i = 0; i < n; i++) x.push(f(i, n, x))
+    return x
+}
+
+export const join = d => xs => {
+    if (xs === null || xs === undefined) return ''
+    else if (xs.constructor === Array) return xs.join(d)
+    else if (isIterable(xs)) return Array.from(xs).join(d)
+    else return ''
+}
+
+export const sort = f => x => x.constructor === Array ? x.sort(f) : Array.from(x).sort(f)
+export const reverse = x => Array.from(x).reverse()
+export const objectify = f => reduce(x => tap(o => o[f(x)] = x))({})
+
+export function swap (xs, a, b) {
+    const c = xs[a]
+    xs[a] = xs[b]
+    xs[b] = c
+    return xs
+}
+
+export const group = (...fs) => xs => {
+    if (fs.length === 0) return xs
+    else {
+        const groups = group_(first(fs), xs)
+        for (const k of Object.keys(groups))
+            groups[k] = group(...tail(fs))(groups[k])
+        return groups
+    }
+}
+
+function group_(f, xs) {
+    return reduce(x => tap(groups => {
+        const g = f(x)
+        if (!groups.hasOwnProperty(g)) groups[g] = []
+        groups[g].push(x)
+    }))({})(xs)
+}
 
 
 // ========
 // Equality
-// ========
+// r==
 
 export const not = a => !a
 export const is = a => b => a === b
@@ -595,5 +648,30 @@ Duad.filter_first = f => filter(B(f)(first))
 Duad.filter_second = f => filter(B(f)(second))
 
 
-// etc
+// =======
+// Strings
+// =======
+
+export const split = a => b => b.split(a)
+export const trim = x => x.trim()
+export const startsWith = a => b => b.startsWith(a)
+export const endsWith = a => b => b.endsWith(b)
+export const startsWithAny = xs => x => xs.map(startsWith).some(T(x))
+export const endsWithAny = xs => x => xs.map(endsWith).some(T(x))
+export const str = x => ''+x
+
+
+// ========
+// Et cetera
+// =========
 export const getMany = B(apply(map(get)))
+
+// Returns true if an array xs has at least one item from ys. In other
+// words, checks if the intersection of the two arrays is non-empty.
+export const has_one = D(C(some))(I)(inside)
+
+export const print = tap(console.log)
+export function assert(condition, msg='Assert failed') {
+    if (!condition) throw new Error(msg)
+    else return condition
+}
