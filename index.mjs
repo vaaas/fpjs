@@ -127,8 +127,6 @@ export const update = (a, ...keys) => b => {
     return b
 }
 
-export const getMany = B(apply(map(get)))
-
 export const object_map = f => xs => Object.fromEntries(Object.entries(xs).map(x => f(x, xs)))
 export const object_filter = f => xs => Object.fromEntries(Object.entries(xs).filter(x => f(x, xs)))
 
@@ -164,19 +162,6 @@ function* _combine_fn(head=[], fs=[]) {
 export const first = x => x[0]
 export const second = x => x[1]
 export const last = x => x[x.length-1]
-
-
-// ====
-// Duad
-// ====
-
-const Duad = (a, b) => [a, b]
-Duad.prefix = a => b => [a, b]
-Duad.suffix = b => a => [b, a]
-Duad.map_first = f => map(x => [f(x[0]), x[1]])
-Duad.map_second = f => map(x => [x[0], f(x[1])])
-Duad.filter_first = f => filter(B(f)(first))
-Duad.filter_second = f => filter(B(f)(second))
 
 
 // ========
@@ -251,6 +236,84 @@ export const cond = (...fs) => x => {
         if (fs[i](x)) return fs[i+1](x)
     return len === fs.length ? x : Array.last(fs)(x)
 }
+
+
+// ===========
+// Mathematics
+// ===========
+
+export function between (x, low, high) { return x >= low && x <= high }
+export const cbetween = (low, high) => x => between(x, low, high)
+export const gt = a => b => b > a
+export const gte = a => b => b >= a
+export const lt = a => b => b < a
+export const lte = a => b => b <= a
+export const pow = a => b => b**a
+export const mult = a => b => a*b
+export const div = a => b => b/a
+
+export const add = a => b => {
+    if (a === null || a === undefined || b === null || b === undefined || a.constructor !== b.constructor)
+        return null
+    else switch(a.constructor) {
+        case Number:
+        case String: return a + b
+
+        case Array: return [...a, ...b]
+
+        case Map: {
+            const n = new Map(Array.from(a.entries()))
+            for (const [k, v] of b.entries()) n.set(k, v)
+            return n
+        }
+
+        case Set: {
+            const n = new Set(a)
+            for (const x of b) n.add(x)
+            return n
+        }
+
+        case Object:
+            if (isIterable(a) && isIterable(b))
+                return (function* () { yield* a ; yield* b })()
+            else return { ...a, ...b }
+            break
+
+        default: return null
+    }
+}
+
+export const addr = C(add)
+export const randint = (a, b) => a+Math.floor(Math.random()*(b-a))
+export const clamp = (x, min, max) => {
+    if (x < min) return min
+    else if (x > max) return max
+    else return x
+}
+export const relative = (x, min, max) => (x-min)/(max-min)
+export const ceil = (x, n=0) => Math.ceil(x*10**-n)*10**n
+export const floor = (x, n=0) => Math.floor(x*10**-n)*10**n
+export const minmax = (a, b) => b < a ? [b, a] : [a, b]
+export const plus_mod = m => x => x + (m - x % m)
+export const rollover = (low, high) => x => {
+    if (x < low) return high
+    else if (x > high) return low
+    else return x
+}
+export function* naturals() { let i = 0 ; while (true) yield i++ }
+
+export class Range {
+    constuctor(min, max) {
+        self.min = min
+        self.max = max
+    }
+    includes(x) {
+        return between(x, this.min, this.max)
+    }
+}
+
+export const probability = div(100)
+export const percentage = mult(100)
 
 
 // =========
@@ -418,84 +481,6 @@ export const early = f => xs => {
 }
 
 
-// ===========
-// Mathematics
-// ===========
-
-export function between (x, low, high) { return x >= low && x <= high }
-export const cbetween = (low, high) => x => between(x, low, high)
-export const gt = a => b => b > a
-export const gte = a => b => b >= a
-export const lt = a => b => b < a
-export const lte = a => b => b <= a
-export const pow = a => b => b**a
-export const mult = a => b => a*b
-export const div = a => b => b/a
-
-export const add = a => b => {
-    if (a === null || a === undefined || b === null || b === undefined || a.constructor !== b.constructor)
-        return null
-    else switch(a.constructor) {
-        case Number:
-        case String: return a + b
-
-        case Array: return [...a, ...b]
-
-        case Map: {
-            const n = new Map(Array.from(a.entries()))
-            for (const [k, v] of b.entries()) n.set(k, v)
-            return n
-        }
-
-        case Set: {
-            const n = new Set(a)
-            for (const x of b) n.add(x)
-            return n
-        }
-
-        case Object:
-            if (isIterable(a) && isIterable(b))
-                return (function* () { yield* a ; yield* b })()
-            else return { ...a, ...b }
-            break
-
-        default: return null
-    }
-}
-
-export const addr = C(add)
-export const randint = (a, b) => a+Math.floor(Math.random()*(b-a))
-export const clamp = (x, min, max) => {
-    if (x < min) return min
-    else if (x > max) return max
-    else return x
-}
-export const relative = (x, min, max) => (x-min)/(max-min)
-export const ceil = (x, n=0) => Math.ceil(x*10**-n)*10**n
-export const floor = (x, n=0) => Math.floor(x*10**-n)*10**n
-export const minmax = (a, b) => b < a ? [b, a] : [a, b]
-export const plus_mod = m => x => x + (m - x % m)
-export const rollover = (low, high) => x => {
-    if (x < low) return high
-    else if (x > high) return low
-    else return x
-}
-export function* naturals() { let i = 0 ; while (true) yield i++ }
-
-export class Range {
-    constuctor(min, max) {
-        self.min = min
-        self.max = max
-    }
-    includes(x) {
-        return between(x, this.min, this.max)
-    }
-}
-
-export const probability = div(100)
-export const percentage = mult(100)
-
-
 // ========
 // Promises
 // ========
@@ -595,3 +580,20 @@ export const $ = (q, dom=document) => dom.querySelector(x)
 export const $$ = (q, dom=document) => Array.from(dom.querySelectorAll(x))
 export const on_enter = when(x => x.keyCode === 13)
 export const on_ctrl_enter = when(x => x.keyCode === 13 && x.ctrlKey)
+
+
+// ====
+// Duad
+// ====
+
+const Duad = (a, b) => [a, b]
+Duad.prefix = a => b => [a, b]
+Duad.suffix = b => a => [b, a]
+Duad.map_first = f => map(x => [f(x[0]), x[1]])
+Duad.map_second = f => map(x => [x[0], f(x[1])])
+Duad.filter_first = f => filter(B(f)(first))
+Duad.filter_second = f => filter(B(f)(second))
+
+
+// etc
+export const getMany = B(apply(map(get)))
