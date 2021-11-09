@@ -123,8 +123,8 @@ export const change = (f, ...keys) => tap(x => {
 })
 
 export const update = (a, ...keys) => b => {
-    if (keys.length === 0) keys = Object.keys(b)
-    for (const k of keys) a[k] = b[k]
+    if (keys.length === 0) keys = Object.keys(a)
+    for (const k of keys) b[k] = a[k]
     return b
 }
 
@@ -169,7 +169,7 @@ export const slice = (a, b=Infinity) => xs => xs.slice(a, b)
 export const array_map = f => x => x.map(f)
 export const array_filter = f => x => x.filter(f)
 export const array_splice = (a, b) => x => x.splice(a, b)
-export const array_take = i => x => x.splice(i, 1)
+export const array_take = i => tap(x => x.splice(i, 1))
 export const array_get = B(array_map)(get)
 export const array_push = x => tap(xs => xs.push(x))
 export const pick = x => x[randint(0, x.length)]
@@ -219,7 +219,7 @@ function group_(f, xs) {
 
 // ========
 // Equality
-// r==
+// ========
 
 export const not = a => !a
 export const is = a => b => a === b
@@ -272,22 +272,22 @@ export const when = cond => then => x => cond(x) ? then(x) : x
 export const maybeor = ifelse(defined)
 export const maybe = when(defined)
 export const nothing = when(null_undefined)
-export const success = when(instance(Error))
-export const failure = when(x => !(x instanceof Error))
+export const success = when(x => !(x instanceof Error))
+export const failure = when(instance(Error))
 export const trycatch = ifelse(x => !(x instanceof Error))
 
 export const valmap = (...xs) => x => {
     const len = xs.length - xs.length % 2
     for (let i = 0; i < len; i += 2)
         if (xs[i] === x) return xs[i+1]
-    return len === xs.length ? x : Array.last(xs)
+    return len === xs.length ? x : last(xs)
 }
 
 export const cond = (...fs) => x => {
     const len = fs.length - fs.length % 2
     for (let i = 0; i < len; i += 2)
         if (fs[i](x)) return fs[i+1](x)
-    return len === fs.length ? x : Array.last(fs)(x)
+    return len === fs.length ? x : last(fs)(x)
 }
 
 
@@ -328,12 +328,15 @@ export const add = a => b => {
         }
 
         case Object:
-            if (isIterable(a) && isIterable(b))
-                return (function* () { yield* a ; yield* b })()
-            else return { ...a, ...b }
+            return { ...a, ...b }
             break
 
-        default: return null
+        default:
+            if (isIterable(a) && isIterable(b))
+                return (function* () { yield* a ; yield* b })()
+            else
+                return null
+            break
     }
 }
 
@@ -435,7 +438,7 @@ export const every = f => xs => { for (const x of xs) if (!f(x)) return false ; 
 export const some = f => xs => { for (const x of xs) if (f(x)) return true ; return false }
 export function* seq(start, end) { for (let x = start; x <= end; x++) yield x }
 export const each = f => tap(xs => { for (const x of xs) f(x) })
-export const apply = D(C(map))(I)(T)
+export const apply = D(C(array_map))(I)(T)
 
 export const limit = n => function* (xs) {
     let i = 0
@@ -666,7 +669,8 @@ export const str = x => ''+x
 // ========
 // Et cetera
 // =========
-export const getMany = B(apply(map(get)))
+
+export const getMany = ks => x => ks.map(k => get(k)(x))
 
 // Returns true if an array xs has at least one item from ys. In other
 // words, checks if the intersection of the two arrays is non-empty.
