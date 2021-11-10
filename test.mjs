@@ -106,7 +106,6 @@ Test('object_filter', () => {
     assert.deepEqual({ a: 1 }, object_filter(([k, v]) => k !== 'b' && v < 2)({ a: 1, b: 1, c: 15 }))
 })
 
-
 Test('and', () => {
     assert.equal(true && true, and(true)(true))
     assert.equal(true && false, and(true)(false))
@@ -120,7 +119,6 @@ Test('or', () => {
     assert.equal(false || false, or(false)(false))
     assert.equal(false || true, or(false)(true))
 })
-
 
 Test('combinations', () => {
     assert.deepEqual(
