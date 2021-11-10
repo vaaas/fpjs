@@ -586,6 +586,22 @@ Test('outside', () => {
     assert.equal(true, outside(new Map([[1, 1], [2, 2], [3, 3]]))(4))
 })
 
+Test('has', () => {
+    assert.equal(false, has(1)(null))
+    assert.equal(true, has('1')('32123'))
+    assert.equal(true, has(1)([3,2,1]))
+    assert.equal(true, has(1)(new Set([3,2,1])))
+    assert.equal(true, has(1)(new Map([[1, 1], [2, 2], [3, 3]])))
+})
+
+Test('hasnt', () => {
+    assert.equal(true, hasnt(4)(null))
+    assert.equal(true, hasnt('4')('32123'))
+    assert.equal(true, hasnt(4)([3,2,1]))
+    assert.equal(false, hasnt(3)(new Set([3,2,1])))
+    assert.equal(true, hasnt(4)(new Map([[1, 1], [2, 2], [3, 3]])))
+})
+
 Test('average', () => {
     assert.equal(2, average([1,2,3]))
     assert.equal(2, average(new Set([1,2,3])))
@@ -684,4 +700,18 @@ Test('has_one', () => {
 
 Test('print', () => {
     assert.equal('test', print('test'))
+})
+
+Test('attempt', () => {
+    assert.equal('test',
+        attempt(function() { throw new Error('test') }).message
+    )
+})
+
+Test('unshift', () => {
+    assert.deepEqual([1,2,3], Array.from(unshift([1])([2,3])))
+})
+
+Test('append', () => {
+    assert.deepEqual([1,2,3], Array.from(append([2,3])([1])))
 })

@@ -4,7 +4,8 @@
   "description": "functional programming utilities for javascript",
   "main": "index.mjs",
   "scripts": {
-    "test": "node test.mjs"
+    "test": "node test.mjs",
+    "literate": "node node_modules/vas-literate/vas-literate.js lit"
   },
   "repository": {
     "type": "git",

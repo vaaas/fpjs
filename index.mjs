@@ -290,6 +290,11 @@ export const cond = (...fs) => x => {
     return len === fs.length ? x : last(fs)(x)
 }
 
+export const attempt = f => {
+    try { return f() }
+    catch (e) { return e }
+}
+
 
 // ===========
 // Mathematics
@@ -405,6 +410,7 @@ export const inside = xs => x => {
 
 export const outside = B1(not)(inside)
 export const has = C(inside)
+export const hasnt = C(outside)
 
 export const flatten = n => function* (xs) {
     for (const x of xs)
@@ -538,6 +544,9 @@ export const early = f => xs => {
         else latest = x
     return latest
 }
+
+export const unshift = a => function* (b) { yield* a ; yield* b }
+export const append = C(unshift)
 
 
 // ========
