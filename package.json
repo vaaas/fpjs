@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/vaaas/fpjs/issues"
   },
-  "homepage": "https://github.com/vaaas/fpjs#readme"
+  "homepage": "https://github.com/vaaas/fpjs#readme",
+  "devDependencies": {
+      "vas-literate": "git+https://github.com/vaaas/vas-literate.git"
+  }
 }
