@@ -5,7 +5,7 @@
   "main": "index.mjs",
   "scripts": {
     "test": "node test.mjs",
-    "literate": "node node_modules/vas-literate/vas-literate.js lit"
+    "literate": "node node_modules/vas-literate/vas-literate.js README.md ."
   },
   "repository": {
     "type": "git",

@@ -314,7 +314,7 @@ export const do_nothing = K(false)
 
 **Test**
 
-```javascript index.mjs
+```javascript test.mjs
 Test('do_nothing', () => {
     assert.equal(false, do_nothing())
 })
@@ -449,7 +449,7 @@ Set key `k` to the value `v` for object `o`. Like `get`, execution varies depend
 
 ```javascript index.mjs
 export const set = k => v => tap(o => {
-    if (o is null || o === undefined) return
+    if (o === null || o === undefined) return
     else if (o.constructor === Map) o.set(k, v)
     else o[k] = v
 })
@@ -2473,11 +2473,13 @@ Finds a single item for which f(x) is true. Otherwise, returns null.
 export const find = f => xs => { for (const x of xs) if (f(x)) return x ; return null }
 ```
 
-**Test**
+---
+
+**find_index**
 
 Finds a single index of an item for which f(x) is true. Otherwise, returns null.
 
-```javascript test.mjs
+```javascript index.mjs
 export const find_index = f => xs => { for (const [i, x] of enumerate(xs)) if (f(x)) return i ; return null }
 ```
 
@@ -2731,6 +2733,8 @@ Test('next', () => {
 
 **early**
 
+Given a sequence xs, return the first element x for which the function f(x) is true. Otherwise, return the very last element of xs. Essentially, it ends a sequence prematurely.
+
 ```javascript index.mjs
 export const early = f => xs => {
     let latest = null
@@ -2739,19 +2743,6 @@ export const early = f => xs => {
         else latest = x
     return latest
 }
-```
-
----
-
-**early**
-
-Given a sequence xs, return the first element x for which the function f(x) is true. Otherwise, return the very last element of xs. Essentially, it ends a sequence prematurely.
-
-```javascript index.mjs
-Test('early', () => {
-    assert.equal(null, early(is(null))([1,2,3,4,null,5,6,7]))
-    assert.equal(7, early(is(null))([1,2,3,4,5,6,7]))
-})
 ```
 
 **Test**
