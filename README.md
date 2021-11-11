@@ -2774,6 +2774,18 @@ export const unshift = a => function* (b) { yield* a ; yield* b }
 export const append = C(unshift)
 ```
 
+**Test**
+
+```javascript test.mjs
+Test('unshift', () => {
+    assert.deepEqual([1,2,3], Array.from(unshift([1])([2,3])))
+})
+
+Test('append', () => {
+    assert.deepEqual([1,2,3], Array.from(append([2,3])([1])))
+})
+```
+
 # Promises
 
 **sleep**
@@ -3066,11 +3078,128 @@ Test('duad combine', () => {
 })
 ```
 
----
+# Strings
 
-****
+**split**
+
+Curried implements of `String.prototype.split`.
 
 ```javascript index.mjs
+export const split = a => b => b.split(a)
+```
+
+**Test**
+
+```javascript test.mjs
+Test('split', () => {
+    const x = '1 2 3'
+    assert.deepEqual(x.split(' '), split(' ')(x))
+})
+```
+
+---
+
+**trim**
+
+Curried implementation of `String.prototype.trim`.
+
+```javascript index.mjs
+export const trim = x => x.trim()
+```
+
+**Test**
+
+```javascript test.mjs
+Test('trim', () => {
+    const x = '      1234 '
+    assert.equal(x.trim(), trim(x))
+})
+```
+
+---
+
+**startsWith**
+
+Curried implementation of `String.prototype.startsWith`.
+
+```javascript index.mjs
+export const startsWith = a => b => b.startsWith(a)
+```
+
+**Test**
+
+```javascript test.mjs
+Test('startsWith', () => {
+    const x = 'abcd'
+    assert.equal(x.startsWith('ab'), startsWith('ab')(x))
+})
+```
+
+---
+
+**endsWith**
+
+Curried implementation of `String.prototype.endsWith`
+
+```javascript index.mjs
+export const endsWith = a => b => b.endsWith(b)
+```
+
+**Test**
+
+```javascript test.mjs
+Test('endsWith', () => {
+    const x = 'abcd'
+    assert.equal(x.endsWith('cd'), endsWith('cd')(x))
+})
+```
+
+---
+
+**startsWithAny**
+
+Like `startsWith`, but accepts multiple strings `xs` to check against. If the string `x` starts with any of member of `xs`, return true.
+
+```javascript index.mjs
+export const startsWithAny = xs => x => xs.map(startsWith).some(T(x))
+```
+
+**Test**
+
+```javascript test.mjs
+Test('startsWithAny', () => {
+    const x = 'America'
+    assert.equal(true, startsWithAny(['yo', 'lo', 'Amer'])(x))
+})
+```
+
+---
+
+Similar to `startsWithAny`, but using `endsWith` instead.
+
+**endsWithAny**
+
+```javascript index.mjs
+export const endsWithAny = xs => x => xs.map(endsWith).some(T(x))
+```
+
+**Test**
+
+```javascript test.mjs
+Test('endsWithAny', () => {
+    const x = 'America'
+    assert.equal(true, endsWithAny(['yo', 'lo', 'ica'])(x))
+})
+```
+
+---
+
+**str**
+
+Return the string representation of `x`.
+
+```javascript index.mjs
+export const str = x => ''+x
 ```
 
 **Test**
@@ -3078,122 +3207,70 @@ Test('duad combine', () => {
 ```javascript test.mjs
 ```
 
----
+# Et cetera
 
-****
+**getMany**
+
+Get several keys `ks` of `x`. For example:
+
+    getMany('x', 'y')({ x: 1, y : 2})
+
+returns `[1, 2]`
 
 ```javascript index.mjs
+export const getMany = (...ks) => x => ks.map(k => get(k)(x))
 ```
 
 **Test**
 
 ```javascript test.mjs
+Test('getMany', () => {
+    assert.deepEqual([1, 2, 3], getMany('x', 'y', 'z')({ x: 1, y: 2, z: 3 }))
+})
 ```
 
 ---
 
-****
+**has_one**
+
+Returns true if an array xs has at least one item from ys. In other words, checks if the intersection of the two arrays is non-empty. Example:
 
 ```javascript index.mjs
+export const has_one = D(C(some))(I)(inside)
 ```
 
 **Test**
 
 ```javascript test.mjs
+Test('has_one', () => {
+    assert.equal(true, has_one('345')('123'))
+    assert.equal(false, has_one('345')('12'))
+})
 ```
 
 ---
 
-****
+**print**
 
 ```javascript index.mjs
+export const print = tap(console.log)
 ```
 
 **Test**
 
 ```javascript test.mjs
+Test('print', () => {
+    assert.equal('test', print('test'))
+})
 ```
 
 ---
 
-****
+**assert**
 
 ```javascript index.mjs
-```
-
-**Test**
-
-```javascript test.mjs
-```
-
----
-
-****
-
-```javascript index.mjs
-```
-
-**Test**
-
-```javascript test.mjs
-```
-
----
-
-****
-
-```javascript index.mjs
-```
-
-**Test**
-
-```javascript test.mjs
-```
-
----
-
-****
-
-```javascript index.mjs
-```
-
-**Test**
-
-```javascript test.mjs
-```
-
----
-
-****
-
-```javascript index.mjs
-```
-
-**Test**
-
-```javascript test.mjs
-```
-
----
-
-****
-
-```javascript index.mjs
-```
-
-**Test**
-
-```javascript test.mjs
-```
-
----
-
-****
-
-```javascript index.mjs
-```
-
-**Test**
-
-```javascript test.mjs
+export function assert(condition, msg='Assert failed') {
+    if (!condition) throw new Error(msg)
+    else return condition
+}
 ```
