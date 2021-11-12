@@ -371,7 +371,7 @@ export function len(x) {
 		default:
 			if (isIterable(x)) {
 				let i = 0
-				for (const x of xs) i++
+				for (const y of x) i++
 				return i
 			} else return 0
 			break
