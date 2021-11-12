@@ -2956,8 +2956,8 @@ Test('union', () => {
 # DOM
 
 ```javascript index.mjs
-export const $ = (q, dom=document) => dom.querySelector(x)
-export const $$ = (q, dom=document) => Array.from(dom.querySelectorAll(x))
+export const $ = (q, dom=document) => dom.querySelector(q)
+export const $$ = (q, dom=document) => Array.from(dom.querySelectorAll(q))
 export const on_enter = when(x => x.keyCode === 13)
 export const on_ctrl_enter = when(x => x.keyCode === 13 && x.ctrlKey)
 ```
