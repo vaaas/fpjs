@@ -481,6 +481,17 @@ export const $ = (q, dom=document) => dom.querySelector(q)
 export const $$ = (q, dom=document) => Array.from(dom.querySelectorAll(q))
 export const on_enter = when(x => x.keyCode === 13)
 export const on_ctrl_enter = when(x => x.keyCode === 13 && x.ctrlKey)
+
+export function EL(name, attrs=null, children=null) {
+	const elem = document.createElement(name)
+	if (attrs)
+		for (const [k, v] of Object.entries(attrs))
+			elem[k] = v
+	if (children)
+		for (const x of children)
+			elem.appendChild(x instanceof Node ? x : document.createTextNode(str(x)))
+	return elem
+}
 export const Duad = (a, b) => [a, b]
 Duad.prefix = a => b => [a, b]
 Duad.suffix = a => b => [b, a]
