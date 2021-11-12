@@ -19,6 +19,7 @@ export const Su = (a, b, c) => d => a(b(d), c(d)) // starling prime uncurried
 export const T = x => f => f(x) // thrush
 export const W = a => b => a(b)(b) // Warbler
 export const WS = a => b => a(...b)(...b)
+export const Wu = a => b => a(b, b) // Warbler uncurried
 export const Q = a => b => c => b(a(c)) // queer bird
 export const tap = f => x => { f(x) ; return x }
 export const pipe = (x, ...fs) => { for (let i = 0; i < fs.length; i++) x = fs[i](x); return x }
@@ -259,6 +260,11 @@ export class Range {
 }
 export const probability = div(100)
 export const percentage = mult(100)
+export function signum (x) {
+	if (x === 0) return 0
+	else if (x < 0) return -1
+	else if (x > 0) return 1
+}
 export const StopIteration = Symbol()
 export const isIterable = x => x !== null && x !== undefined && x[Symbol.iterator] instanceof Function
 export const iter = x => x[Symbol.iterator]()

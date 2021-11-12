@@ -186,6 +186,7 @@ Apply an argument to a function twice.
 ```javascript index.mjs
 export const W = a => b => a(b)(b) // Warbler
 export const WS = a => b => a(...b)(...b)
+export const Wu = a => b => a(b, b) // Warbler uncurried
 ```
 
 ---
@@ -2202,6 +2203,28 @@ export const percentage = mult(100)
 ```javascript test.mjs
 Test('percentage', () => {
 	assert.equal(1, percentage(0.01))
+})
+```
+
+---
+
+**signum**
+
+Returns the sign of the number. -1 if negative, 1 if positive, 0 otherwise.
+
+```javascript index.mjs
+export function signum (x) {
+	if (x === 0) return 0
+	else if (x < 0) return -1
+	else if (x > 0) return 1
+}
+```
+
+**Test**
+
+```javascript test.mjs
+Test('signum', () => {
+	assert.deepEqual([1, 0, -1], [4839720, 0, -Infinity].map(signum))
 })
 ```
 

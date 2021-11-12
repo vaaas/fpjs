@@ -471,6 +471,9 @@ Test('probability', () => {
 Test('percentage', () => {
 	assert.equal(1, percentage(0.01))
 })
+Test('signum', () => {
+	assert.deepEqual([1, 0, -1], [4839720, 0, -Infinity].map(signum))
+})
 Test('isIterable', () => {
 	assert.equal(false, isIterable(false))
 	assert.equal(false, isIterable({}))
