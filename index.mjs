@@ -64,8 +64,8 @@ export const update = (a, ...keys) => b => {
 export const object_map = f => xs => Object.fromEntries(Object.entries(xs).map(x => f(x, xs)))
 export const object_filter = f => xs => Object.fromEntries(Object.entries(xs).filter(x => f(x, xs)))
 export const not = a => !a
-export const and = a => b => a && b
-export const or = a => b => a || b
+export const and = a => b => b && a
+export const or = a => b => b || a
 export function* combinations(...xs) { yield* _combine([], xs) }
 function* _combine(head=[], tails=[[]]) {
 	if (tails.length === 0) yield head

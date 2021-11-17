@@ -636,7 +636,7 @@ Test('not', () => {
 Curried implementation of `&&`.
 
 ```javascript index.mjs
-export const and = a => b => a && b
+export const and = a => b => b && a
 ```
 
 **Test**
@@ -657,7 +657,7 @@ Test('and', () => {
 Curried implementation of `||`
 
 ```javascript index.mjs
-export const or = a => b => a || b
+export const or = a => b => b || a
 ```
 
 **Test**
