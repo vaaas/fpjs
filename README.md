@@ -3103,6 +3103,25 @@ Test('duad combine', () => {
 })
 ```
 
+---
+
+**Duad.is**
+
+Returns `true` if a duad is the same as another duad.
+
+```javascript index.mjs
+Duad.is = a => b => first(a) === first(b) && second(a) === second(b)
+```
+
+**Test**
+
+```javascript test.mjs
+Test('duad.is', () => {
+	assert.equal(true, Duad.is([1,'yo'])([1, 'yo']))
+	assert.equal(false, Duad.is([1, {}])([1, {}]))
+})
+```
+
 # Strings
 
 **split**
