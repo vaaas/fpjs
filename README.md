@@ -45,12 +45,12 @@ for (const [k, v] of Object.entries(fpjs))
 import assert from 'assert/strict'
 
 function Test(name, cb) {
-	console.debug('testing', name)
+	console.log('testing', name)
 	try {
 		cb()
-		console.debug('all tests passed for', name)
+		console.log('all tests passed for', name)
 	} catch(e) {
-		console.debug('test failed for', name)
+		console.error('test failed for', name)
 		console.error(e)
 	}
 }
@@ -1233,6 +1233,24 @@ export const is = a => b => a === b
 Test('is', () => {
 	assert.equal(1 === 1, is(1)(1))
 	assert.equal({} === {}, is({})({}))
+})
+```
+
+---
+
+**like**
+
+Tests whether `a` is equal to `b`, coercing types if necessary.
+
+```javascript index.mjs
+export const like = a => b => a == b
+```
+
+```javascript test.mjs
+Test('like', () => {
+    assert.equal(1 == 1, like(1)(1))
+    assert.equal(1 == '1', like(1)('1'))
+    assert.equal({} == {}, like({})({}))
 })
 ```
 

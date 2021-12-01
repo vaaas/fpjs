@@ -127,6 +127,7 @@ function group_(f, xs) {
 	}))({})(xs)
 }
 export const is = a => b => a === b
+export const like = a => b => a == b
 export const isnt = B1(not)(is)
 export const null_undefined = x => x === null || x === undefined
 export const defined = B(not)(null_undefined)

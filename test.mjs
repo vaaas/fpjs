@@ -5,12 +5,12 @@ for (const [k, v] of Object.entries(fpjs))
 import assert from 'assert/strict'
 
 function Test(name, cb) {
-	console.debug('testing', name)
+	console.log('testing', name)
 	try {
 		cb()
-		console.debug('all tests passed for', name)
+		console.log('all tests passed for', name)
 	} catch(e) {
-		console.debug('test failed for', name)
+		console.error('test failed for', name)
 		console.error(e)
 	}
 }
@@ -243,6 +243,11 @@ Test('group', () => {
 Test('is', () => {
 	assert.equal(1 === 1, is(1)(1))
 	assert.equal({} === {}, is({})({}))
+})
+Test('like', () => {
+    assert.equal(1 == 1, like(1)(1))
+    assert.equal(1 == '1', like(1)('1'))
+    assert.equal({} == {}, like({})({}))
 })
 Test('isnt', () => {
 	assert.equal(1 !== 1, isnt(1)(1))
