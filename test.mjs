@@ -245,9 +245,9 @@ Test('is', () => {
 	assert.equal({} === {}, is({})({}))
 })
 Test('like', () => {
-    assert.equal(1 == 1, like(1)(1))
-    assert.equal(1 == '1', like(1)('1'))
-    assert.equal({} == {}, like({})({}))
+	assert.equal(1 == 1, like(1)(1))
+	assert.equal(1 == '1', like(1)('1'))
+	assert.equal({} == {}, like({})({}))
 })
 Test('isnt', () => {
 	assert.equal(1 !== 1, isnt(1)(1))
