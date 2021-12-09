@@ -45,10 +45,8 @@ for (const [k, v] of Object.entries(fpjs))
 import assert from 'assert/strict'
 
 function Test(name, cb) {
-	console.log('testing', name)
 	try {
 		cb()
-		console.log('all tests passed for', name)
 	} catch(e) {
 		console.error('test failed for', name)
 		console.error(e)
@@ -1217,6 +1215,29 @@ Test('group', () => {
 
 ---
 
+**partition**
+
+Split a sequence into N sequences. Each sequence corresponds to a single filter F.
+
+```javascript index.mjs
+export const partition = (...fs) => foldr(x => tap(xs => {
+	const i = fs.findIndex(T(x))
+	if (i !== -1) xs[i].push(x)
+}))(construct(() => [], fs.length))
+```
+
+```javascript test.mjs
+Test('partition', () => {
+	assert.deepEqual(
+		[[1], [2,4], [5]],
+		partition
+			(is(1), divisible(2), divisible(5))
+			([1,2,3,4,5]))
+})
+```
+
+---
+
 # Equality
 
 **is**
@@ -1857,6 +1878,26 @@ export const div = a => b => b/a
 ```javascript test.mjs
 Test('div', () => {
 	assert.equal(3/2, div(2)(3))
+})
+```
+
+---
+
+**divisible**
+
+Returns true if a number B is divisible by A (it has zero remainder).
+
+```javascript index.mjs
+export const divisible = a => b => b % a === 0
+```
+
+**Test**
+
+```javascript test.mjs
+Test('divisible', () => {
+	assert.equal(true, divisible(2)(4))
+	assert.equal(true, divisible(3)(30))
+	assert.equal(false, divisible(100)(101))
 })
 ```
 
@@ -2688,6 +2729,28 @@ export function len(x) {
 			break
 	}
 }
+```
+
+---
+
+**empty**
+
+Returns true if a sequence has a length of zero.
+
+```javascript index.mjs
+export const empty = B(is(0))(len)
+```
+
+**Test**
+
+```javascript test.mjs
+Test('empty', () => {
+	assert.equal(true, empty({}))
+	assert.equal(true, empty([]))
+	assert.equal(true, empty(new Set()))
+	assert.equal(true, empty(new Map()))
+	assert.equal(false, empty({ x: 1 }))
+})
 ```
 
 ---

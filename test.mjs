@@ -5,10 +5,8 @@ for (const [k, v] of Object.entries(fpjs))
 import assert from 'assert/strict'
 
 function Test(name, cb) {
-	console.log('testing', name)
 	try {
 		cb()
-		console.log('all tests passed for', name)
 	} catch(e) {
 		console.error('test failed for', name)
 		console.error(e)
@@ -240,6 +238,13 @@ Test('group', () => {
 		group(pluck('colour'), pluck('size'), pluck('logo'))(arr)
 	)
 })
+Test('partition', () => {
+	assert.deepEqual(
+		[[1], [2,4], [5]],
+		partition
+			(is(1), divisible(2), divisible(5))
+			([1,2,3,4,5]))
+})
 Test('is', () => {
 	assert.equal(1 === 1, is(1)(1))
 	assert.equal({} === {}, is({})({}))
@@ -391,6 +396,11 @@ Test('mult', () => {
 Test('div', () => {
 	assert.equal(3/2, div(2)(3))
 })
+Test('divisible', () => {
+	assert.equal(true, divisible(2)(4))
+	assert.equal(true, divisible(3)(30))
+	assert.equal(false, divisible(100)(101))
+})
 Test('add', () => {
 	assert.equal(2, add(1)(1))
 	assert.equal('yolo', add('yo')('lo'))
@@ -521,6 +531,13 @@ Test('hasnt', () => {
 	assert.equal(true, hasnt(4)([3,2,1]))
 	assert.equal(false, hasnt(3)(new Set([3,2,1])))
 	assert.equal(true, hasnt(4)(new Map([[1, 1], [2, 2], [3, 3]])))
+})
+Test('empty', () => {
+	assert.equal(true, empty({}))
+	assert.equal(true, empty([]))
+	assert.equal(true, empty(new Set()))
+	assert.equal(true, empty(new Map()))
+	assert.equal(false, empty({ x: 1 }))
 })
 Test('average', () => {
 	assert.equal(2, average([1,2,3]))

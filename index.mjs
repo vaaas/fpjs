@@ -126,6 +126,10 @@ function group_(f, xs) {
 		groups[g].push(x)
 	}))({})(xs)
 }
+export const partition = (...fs) => foldr(x => tap(xs => {
+	const i = fs.findIndex(T(x))
+	if (i !== -1) xs[i].push(x)
+}))(construct(() => [], fs.length))
 export const is = a => b => a === b
 export const like = a => b => a == b
 export const isnt = B1(not)(is)
@@ -197,6 +201,7 @@ export const lte = a => b => b <= a
 export const pow = a => b => b**a
 export const mult = a => b => a*b
 export const div = a => b => b/a
+export const divisible = a => b => b % a === 0
 export const add = a => b => {
 	if (a === null || a === undefined || b === null || b === undefined || a.constructor !== b.constructor)
 		return null
@@ -384,6 +389,7 @@ export function len(x) {
 			break
 	}
 }
+export const empty = B(is(0))(len)
 export const average = S(div)(len)(sum)
 export const batch = (f, a, n=1000) => xs => new Promise(yes => {
 	tick(iter(xs))
