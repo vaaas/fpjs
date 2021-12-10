@@ -325,7 +325,7 @@ export const scanr = f => i => function* (xs) {
 export const map = f => function* (xs) { for (const x of xs) yield f(x) }
 export const filter = f => function* (xs) { for (const x of xs) if (f(x)) yield x }
 export const find = f => xs => { for (const x of xs) if (f(x)) return x ; return null }
-const find_many = (...fs) => foldr(x => tap(xs => {
+export const find_many = (...fs) => foldr(x => tap(xs => {
 	const i = fs.findIndex(T(x))
 	if (i === -1) return xs
 	xs[i] = x

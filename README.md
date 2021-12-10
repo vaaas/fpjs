@@ -2596,12 +2596,21 @@ export const find = f => xs => { for (const x of xs) if (f(x)) return x ; return
 **find_many**
 
 ```javascript index.mjs
-const find_many = (...fs) => foldr(x => tap(xs => {
+export const find_many = (...fs) => foldr(x => tap(xs => {
 	const i = fs.findIndex(T(x))
 	if (i === -1) return xs
 	xs[i] = x
 	fs[i] = K(false)
 }))(construct(K(null), fs.length))
+```
+
+**Test**
+
+```javascript test.mjs
+Test('find_many', () => {
+	const xs = [0, 1, 2, 3, 4, 5]
+	assert.deepEqual([1, 2, 5], find_many(is(1), is(2), is(5))(xs))
+})
 ```
 
 ---
