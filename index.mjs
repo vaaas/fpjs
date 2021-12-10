@@ -120,13 +120,12 @@ export const group = (...fs) => xs => {
 	}
 }
 
-function group_(f, xs) {
-	return foldr(x => tap(groups => {
+const group_ = (f, xs) =>
+	foldr(x => tap(groups => {
 		const g = f(x)
 		if (!groups.hasOwnProperty(g)) groups[g] = []
 		groups[g].push(x)
 	}))({})(xs)
-}
 export const partition = (...fs) => foldr(x => tap(xs => {
 	const i = fs.findIndex(T(x))
 	if (i !== -1) xs[i].push(x)
@@ -326,6 +325,12 @@ export const scanr = f => i => function* (xs) {
 export const map = f => function* (xs) { for (const x of xs) yield f(x) }
 export const filter = f => function* (xs) { for (const x of xs) if (f(x)) yield x }
 export const find = f => xs => { for (const x of xs) if (f(x)) return x ; return null }
+const find_many = (...fs) => foldr(x => tap(xs => {
+	const i = fs.findIndex(T(x))
+	if (i === -1) return xs
+	xs[i] = x
+	fs[i] = K(false)
+}))(construct(K(null), fs.length))
 export const find_index = f => xs => { for (const [i, x] of enumerate(xs)) if (f(x)) return i ; return null }
 export const every = f => xs => { for (const x of xs) if (!f(x)) return false ; return true }
 export const some = f => xs => { for (const x of xs) if (f(x)) return true ; return false }

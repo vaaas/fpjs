@@ -1171,13 +1171,12 @@ export const group = (...fs) => xs => {
 	}
 }
 
-function group_(f, xs) {
-	return foldr(x => tap(groups => {
+const group_ = (f, xs) =>
+	foldr(x => tap(groups => {
 		const g = f(x)
 		if (!groups.hasOwnProperty(g)) groups[g] = []
 		groups[g].push(x)
 	}))({})(xs)
-}
 ```
 
 **Test**
@@ -2590,6 +2589,19 @@ Finds a single item for which f(x) is true. Otherwise, returns null.
 
 ```javascript index.mjs
 export const find = f => xs => { for (const x of xs) if (f(x)) return x ; return null }
+```
+
+---
+
+**find_many**
+
+```javascript index.mjs
+const find_many = (...fs) => foldr(x => tap(xs => {
+	const i = fs.findIndex(T(x))
+	if (i === -1) return xs
+	xs[i] = x
+	fs[i] = K(false)
+}))(construct(K(null), fs.length))
 ```
 
 ---
