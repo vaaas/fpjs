@@ -146,6 +146,16 @@ export const spread = f => x => f(...x)
 
 ---
 
+**Unspread**
+
+Call a function by passing spreaded arguments as an array.
+
+```javascript index.mjs
+export const unspread = f => (...x) => f(x)
+```
+
+---
+
 **N**
 
 Provides access to the "new" Javascript keyword as a function.

@@ -13,6 +13,7 @@ export const id = I
 export const V = a => b => f => f(a)(b) // vireo
 export const Vu = (a, b) => f => f(a, b) // vireo uncurried
 export const spread = f => x => f(...x)
+export const unspread = f => (...x) => f(x)
 export const N = o => x => new o(x)
 export const S = a => b => c => d => a(b(d))(c(d)) // starling prime
 export const Su = (a, b, c) => d => a(b(d), c(d)) // starling prime uncurried
