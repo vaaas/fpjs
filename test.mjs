@@ -352,6 +352,15 @@ Test('attempt', () => {
 		attempt(function() { throw new Error('test') }).message
 	)
 })
+Test('reject', () => {
+	try {
+		reject(is('Test'), K('Test'))('Test')
+	} catch(e) {
+		assert.equal('Test', e)
+	}
+
+	assert.equal('Best', reject(is('Test'), K('Test'))('Best'))
+})
 Test('between', () => {
 	assert.equal(true, between(1, 0, 10))
 	assert.equal(true, between(1, 1, 10))

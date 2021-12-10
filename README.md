@@ -1702,6 +1702,33 @@ Test('attempt', () => {
 })
 ```
 
+---
+
+**reject**
+
+throw an error when a value `x` is an invalid state
+
+```javascript index.mjs
+export const reject = (f, m) => x => {
+	if (f(x)) throw m(x)
+	else return x
+}
+```
+
+**Test**
+
+```javascript test.mjs
+Test('reject', () => {
+	try {
+		reject(is('Test'), K('Test'))('Test')
+	} catch(e) {
+		assert.equal('Test', e)
+	}
+
+	assert.equal('Best', reject(is('Test'), K('Test'))('Best'))
+})
+```
+
 # Mathematics
 
 **between**

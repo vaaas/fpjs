@@ -192,6 +192,10 @@ export const attempt = f => {
 	try { return f() }
 	catch (e) { return e }
 }
+export const reject = (f, m) => x => {
+	if (f(x)) throw m(x)
+	else return x
+}
 export function between (x, low, high) { return x >= low && x <= high }
 export const cbetween = (low, high) => x => between(x, low, high)
 export const gt = a => b => b > a
