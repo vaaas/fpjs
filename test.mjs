@@ -612,6 +612,9 @@ Test('duad.is', () => {
 	assert.equal(true, Duad.is([1,'yo'])([1, 'yo']))
 	assert.equal(false, Duad.is([1, {}])([1, {}]))
 })
+Test('duad.flip', () => {
+    assert.deepEqual([2,1], Duad.flip([1,2]))
+})
 Test('split', () => {
 	const x = '1 2 3'
 	assert.deepEqual(x.split(' '), split(' ')(x))

@@ -3261,6 +3261,24 @@ Test('duad.is', () => {
 })
 ```
 
+---
+
+**Duad.flip**
+
+Flips a duad. The first item becomes the second, and the second becomes the first.
+
+```javascript index.mjs
+Duad.flip = Su(Duad, second, first)
+```
+
+**Test**
+
+```javascript test.mjs
+Test('duad.flip', () => {
+    assert.deepEqual([2,1], Duad.flip([1,2]))
+})
+```
+
 # Strings
 
 **split**
