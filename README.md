@@ -301,14 +301,38 @@ Test('curry', () => {
 
 **by**
 
-Enables us to to sort an array *by* a function. For example:
+Enables us to to sort an array *by* a function or multiple functions. For example:
 
 	[{ x: 3 }, { x: 1 }].sort(by(x => x.x))
 
 returns `[{ x: 1}, { x: 3}]`
 
 ```javascript index.mjs
-export const by = f => (a,b) => f(a) < f(b) ? -1 : 1
+export const by = (...fs) => (a,b) => {
+	for (const f of fs) {
+		const xa = f(a)
+		const xb = f(b)
+		if (xa === xb) continue
+		else return xa < xb ? -1 : 1
+	}
+	return -1
+}
+```
+
+**Test**
+
+```javascript test.mjs
+Test('by', () => {
+	assert.deepEqual(
+		[
+			{ name: 'Bob', id: 1 },
+			{ name: 'Bob', id: 3 },
+			{ name: 'Nick', id: 2 },
+		],
+		[ { name: 'Bob', id: 1 }, { name: 'Nick', id: 2 }, { name: 'Bob', id: 3 } ]
+		.sort(by(get('name'), get('id')))
+	)
+})
 ```
 
 ---

@@ -25,6 +25,17 @@ Test('curry', () => {
 	const add = (a,b) => a+b
 	assert.equal(add(1, 2), curry(add)(1)(2))
 })
+Test('by', () => {
+	assert.deepEqual(
+		[
+			{ name: 'Bob', id: 1 },
+			{ name: 'Bob', id: 3 },
+			{ name: 'Nick', id: 2 },
+		],
+		[ { name: 'Bob', id: 1 }, { name: 'Nick', id: 2 }, { name: 'Bob', id: 3 } ]
+		.sort(by(get('name'), get('id')))
+	)
+})
 Test('do_nothing', () => {
 	assert.equal(false, do_nothing())
 })
