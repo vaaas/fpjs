@@ -313,6 +313,11 @@ export const flatten = n => function* (xs) {
 		if (n > 0 && isIterable(xs)) yield* flatten(n-1)(x)
 		else yield x
 }
+export const flatten_until = f => function* (xs) {
+	for (const x of xs)
+		if (f(x)) yield x
+		else yield* flatten_until(f)(x)
+}
 export function* enumerate (xs) { let i = 0 ; for (const x of xs) yield [i++, x] }
 export const foldl = f => i => xs => { let a = i ; for (const x of xs) a = f(a)(x) ; return a }
 export const foldr = f => i => xs => { let a = i ; for (const x of xs) a = f(x)(a) ; return a }

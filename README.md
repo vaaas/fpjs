@@ -2535,6 +2535,41 @@ export const flatten = n => function* (xs) {
 }
 ```
 
+**Test**
+
+```javascript test.mjs
+Test('flatten', () => {
+	assert.deepEqual(
+		[1,2,3,4,5,6],
+		Array.from(
+			flatten(2)
+				([ [ [ 1 ], [ 2 ], [ 3 ] ] , [ [ 4 ], [ 5 ], [ 6 ] ] ])))
+})
+```
+
+---
+
+**flatten_until**
+
+```javascript index.mjs
+export const flatten_until = f => function* (xs) {
+	for (const x of xs)
+		if (f(x)) yield x
+		else yield* flatten_until(f)(x)
+}
+```
+
+**Test**
+
+```javascript test.mjs
+Test('flatten_until', () => {
+	assert.deepEqual([1, 2, 3],
+		Array.from(
+		flatten_until(x => typeof x === 'number')
+			([ 1, [ [ [ 2 ], 3 ] ] ])))
+})
+```
+
 ---
 
 **enumerate**

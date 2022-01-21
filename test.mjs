@@ -552,6 +552,19 @@ Test('hasnt', () => {
 	assert.equal(false, hasnt(3)(new Set([3,2,1])))
 	assert.equal(true, hasnt(4)(new Map([[1, 1], [2, 2], [3, 3]])))
 })
+Test('flatten', () => {
+	assert.deepEqual(
+		[1,2,3,4,5,6],
+		Array.from(
+			flatten(2)
+				([ [ [ 1 ], [ 2 ], [ 3 ] ] , [ [ 4 ], [ 5 ], [ 6 ] ] ])))
+})
+Test('flatten_until', () => {
+	assert.deepEqual([1, 2, 3],
+		Array.from(
+		flatten_until(x => typeof x === 'number')
+			([ 1, [ [ [ 2 ], 3 ] ] ])))
+})
 Test('find_many', () => {
 	const xs = [0, 1, 2, 3, 4, 5]
 	assert.deepEqual([1, 2, 5], find_many(is(1), is(2), is(5))(xs))
