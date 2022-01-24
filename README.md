@@ -2998,6 +2998,42 @@ Test('append', () => {
 })
 ```
 
+---
+
+**plist_to_alist**
+
+Converts a plist to an alist. A plist models a dictionary like so:
+
+	[
+		'my_key', 1,
+		'my_other_key', 2
+	]
+
+An alist models a dictionary like so:
+
+	[
+		[ 'my_key', 1 ],
+		[ 'my_other_key', 2 ]
+	]
+
+```javascript index.mjs
+export function* plist_to_alist(xs) {
+	let last = null
+	for (const x of xs)
+		if (last) { yield [ last, x ]; last = null }
+		else last = x
+}
+```
+
+**Test**
+
+```javascript test.mjs
+Test('plist_to_alist', () => {
+	assert.deepEqual({ a: 1, b: 2 },
+		Object.fromEntries(plist_to_alist([ 'a', 1, 'b', 2 ])))
+})
+```
+
 # Promises
 
 **sleep**
@@ -3334,7 +3370,7 @@ Duad.flip = Su(Duad, second, first)
 
 ```javascript test.mjs
 Test('duad.flip', () => {
-    assert.deepEqual([2,1], Duad.flip([1,2]))
+	assert.deepEqual([2,1], Duad.flip([1,2]))
 })
 ```
 

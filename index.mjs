@@ -444,6 +444,12 @@ export const early = f => xs => {
 }
 export const unshift = a => function* (b) { yield* a ; yield* b }
 export const append = C(unshift)
+export function* plist_to_alist(xs) {
+    let last = null
+    for (const x of xs)
+        if (last) { yield [ last, x ]; last = null }
+        else last = x
+}
 export const sleep = x => new Promise(f => setTimeout(f, x))
 export const then = f => x => x.then(f)
 export const pcatch = f => x => x.catch(f)
