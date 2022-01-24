@@ -111,7 +111,7 @@ export const join = d => xs => {
 }
 export const sort = f => x => x.constructor === Array ? x.sort(f) : Array.from(x).sort(f)
 export const reverse = x => Array.from(x).reverse()
-export const objectify = f => foldr(x => tap(o => o[f(x)] = x))({})
+export const objectify = f => x => foldr(x => tap(o => o[f(x)] = x))({})(x)
 export function swap (xs, a, b) {
 	const c = xs[a]
 	xs[a] = xs[b]
@@ -426,10 +426,11 @@ export const batch = (f, a, n=1000) => xs => new Promise(yes => {
 		next_tick(() => tick(xs))
 	}
 })
-export const count = foldr(x => tap(xs => {
-	if (!xs.hasOwnProperty(x)) xs[x] = 0
-	xs[x]++
-}))({})
+export const count = x =>
+	foldr(x => tap(xs => {
+		if (!xs.hasOwnProperty(x)) xs[x] = 0
+		xs[x]++
+	}))({})(x)
 export function next(x) {
 	const v = x.next()
 	if (v.done === true) throw StopIteration
@@ -445,10 +446,10 @@ export const early = f => xs => {
 export const unshift = a => function* (b) { yield* a ; yield* b }
 export const append = C(unshift)
 export function* plist_to_alist(xs) {
-    let last = null
-    for (const x of xs)
-        if (last) { yield [ last, x ]; last = null }
-        else last = x
+	let last = null
+	for (const x of xs)
+		if (last) { yield [ last, x ]; last = null }
+		else last = x
 }
 export const sleep = x => new Promise(f => setTimeout(f, x))
 export const then = f => x => x.then(f)

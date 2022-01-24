@@ -598,8 +598,8 @@ Test('append', () => {
 	assert.deepEqual([1,2,3], Array.from(append([2,3])([1])))
 })
 Test('plist_to_alist', () => {
-    assert.deepEqual({ a: 1, b: 2 },
-        Object.fromEntries(plist_to_alist([ 'a', 1, 'b', 2 ])))
+	assert.deepEqual({ a: 1, b: 2 },
+		Object.fromEntries(plist_to_alist([ 'a', 1, 'b', 2 ])))
 })
 
 Test('union', () => {
@@ -641,7 +641,7 @@ Test('duad.is', () => {
 	assert.equal(false, Duad.is([1, {}])([1, {}]))
 })
 Test('duad.flip', () => {
-    assert.deepEqual([2,1], Duad.flip([1,2]))
+	assert.deepEqual([2,1], Duad.flip([1,2]))
 })
 Test('split', () => {
 	const x = '1 2 3'

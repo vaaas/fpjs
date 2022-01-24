@@ -1130,7 +1130,7 @@ Example:
 returns `{ Bob: { name: 'Bob', money: 10 }, Rob: { name: 'Rob', money: 0 } }`
 
 ```javascript index.mjs
-export const objectify = f => foldr(x => tap(o => o[f(x)] = x))({})
+export const objectify = f => x => foldr(x => tap(o => o[f(x)] = x))({})(x)
 ```
 
 **Test**
@@ -2919,10 +2919,11 @@ export const batch = (f, a, n=1000) => xs => new Promise(yes => {
 Returns an object counting how many times each element x appears in a sequence.
 
 ```javascript index.mjs
-export const count = foldr(x => tap(xs => {
-	if (!xs.hasOwnProperty(x)) xs[x] = 0
-	xs[x]++
-}))({})
+export const count = x =>
+	foldr(x => tap(xs => {
+		if (!xs.hasOwnProperty(x)) xs[x] = 0
+		xs[x]++
+	}))({})(x)
 ```
 
 ---
