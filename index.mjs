@@ -111,7 +111,7 @@ export const join = d => xs => {
 }
 export const sort = f => x => x.constructor === Array ? x.sort(f) : Array.from(x).sort(f)
 export const reverse = x => Array.from(x).reverse()
-export const objectify = f => x => foldr(x => tap(o => o[f(x)] = x))({})(x)
+export const objectify = f => foldr(x => tap(o => o[f(x)] = x))({})
 export function swap (xs, a, b) {
 	const c = xs[a]
 	xs[a] = xs[b]

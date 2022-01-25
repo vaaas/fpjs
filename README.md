@@ -1130,7 +1130,7 @@ Example:
 returns `{ Bob: { name: 'Bob', money: 10 }, Rob: { name: 'Rob', money: 0 } }`
 
 ```javascript index.mjs
-export const objectify = f => x => foldr(x => tap(o => o[f(x)] = x))({})(x)
+export const objectify = f => foldr(x => tap(o => o[f(x)] = x))({})
 ```
 
 **Test**
