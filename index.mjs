@@ -26,14 +26,14 @@ export const tap = f => x => { f(x) ; return x }
 export const pipe = (x, ...fs) => { for (let i = 0; i < fs.length; i++) x = fs[i](x); return x }
 export const arrow = (...fs) => x => { for (let i = 0; i < fs.length; i++) x = fs[i](x); return x }
 export const curry = f => a => b => f(a, b)
-export const by = (...fs) => (a,b) => {
+export const by = (...fs) => (a, b) => {
 	for (const f of fs) {
 		const xa = f(a)
 		const xb = f(b)
 		if (xa === xb) continue
 		else return xa < xb ? -1 : 1
 	}
-	return -1
+	return 0
 }
 export const do_nothing = K(false)
 export function waterfall(...fs) {

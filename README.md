@@ -308,14 +308,14 @@ Enables us to to sort an array *by* a function or multiple functions. For exampl
 returns `[{ x: 1}, { x: 3}]`
 
 ```javascript index.mjs
-export const by = (...fs) => (a,b) => {
+export const by = (...fs) => (a, b) => {
 	for (const f of fs) {
 		const xa = f(a)
 		const xb = f(b)
 		if (xa === xb) continue
 		else return xa < xb ? -1 : 1
 	}
-	return -1
+	return 0
 }
 ```
 
