@@ -1,6 +1,6 @@
 {
   "name": "fpjs",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "functional programming utilities for javascript",
   "main": "index.mjs",
   "scripts": {
