@@ -562,7 +562,7 @@ export function assert(condition, msg='Assert failed') {
 const TupleMap = new Map()
 TupleMap.tuple = []
 
-export function Tuple(...xs) {
+export function tuple(...xs) {
 	let map = TupleMap
 	for (let i = 0, len = xs.length; i < len; i++) {
 		const x = xs[i]
@@ -576,7 +576,7 @@ export function Tuple(...xs) {
 const RecordMap = new Map()
 RecordMap.record = {}
 
-export function Record(x={}) {
+export function record(x={}) {
 	let map = RecordMap
 	const keys = Object.keys(x).sort()
 	for (let i = 0, len = keys.length; i < len; i++) {

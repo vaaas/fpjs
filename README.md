@@ -3582,7 +3582,7 @@ Creates a tuple. Two tuples generated with the same data are guaranteed to be id
 const TupleMap = new Map()
 TupleMap.tuple = []
 
-export function Tuple(...xs) {
+export function tuple(...xs) {
 	let map = TupleMap
 	for (let i = 0, len = xs.length; i < len; i++) {
 		const x = xs[i]
@@ -3599,8 +3599,8 @@ export function Tuple(...xs) {
 
 ```javascript test.mjs
 Test('tuple', () => {
-	assert.equal(Tuple(1,2,3), Tuple(1,2,3))
-	assert.equal(Tuple(), Tuple())
+	assert.equal(tuple(1,2,3), tuple(1,2,3))
+	assert.equal(tuple(), tuple())
 })
 ```
 
@@ -3614,7 +3614,7 @@ Creates a record. Two records generated with the same data are guaranteed to be 
 const RecordMap = new Map()
 RecordMap.record = {}
 
-export function Record(x={}) {
+export function record(x={}) {
 	let map = RecordMap
 	const keys = Object.keys(x).sort()
 	for (let i = 0, len = keys.length; i < len; i++) {
@@ -3635,7 +3635,7 @@ export function Record(x={}) {
 
 ```javascript test.mjs
 Test('record', () => {
-	assert.equal(Record(), Record())
-	assert.equal(Record({ a: 1, b: 2}), Record({ b: 2, a: 1 }))
+	assert.equal(record(), record())
+	assert.equal(record({ a: 1, b: 2}), record({ b: 2, a: 1 }))
 })
 ```

@@ -679,10 +679,10 @@ Test('print', () => {
 	assert.equal('test', print('test'))
 })
 Test('tuple', () => {
-	assert.equal(Tuple(1,2,3), Tuple(1,2,3))
-	assert.equal(Tuple(), Tuple())
+	assert.equal(tuple(1,2,3), tuple(1,2,3))
+	assert.equal(tuple(), tuple())
 })
 Test('record', () => {
-	assert.equal(Record(), Record())
-	assert.equal(Record({ a: 1, b: 2}), Record({ b: 2, a: 1 }))
+	assert.equal(record(), record())
+	assert.equal(record({ a: 1, b: 2}), record({ b: 2, a: 1 }))
 })
