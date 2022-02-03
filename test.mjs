@@ -678,3 +678,11 @@ Test('has_one', () => {
 Test('print', () => {
 	assert.equal('test', print('test'))
 })
+Test('tuple', () => {
+	assert.equal(Tuple(1,2,3), Tuple(1,2,3))
+	assert.equal(Tuple(), Tuple())
+})
+Test('record', () => {
+	assert.equal(Record(), Record())
+	assert.equal(Record({ a: 1, b: 2}), Record({ b: 2, a: 1 }))
+})

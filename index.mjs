@@ -559,3 +559,35 @@ export function assert(condition, msg='Assert failed') {
 	if (!condition) throw new Error(msg)
 	else return condition
 }
+const TupleMap = new Map()
+TupleMap.tuple = []
+
+export function Tuple(...xs) {
+	let map = TupleMap
+	for (let i = 0, len = xs.length; i < len; i++) {
+		const x = xs[i]
+		if (!map.has(x)) map.set(x, new Map())
+		map = map.get(x)
+	}
+	if (map.tuple === undefined)
+		map.tuple = xs
+	return map.tuple
+}
+const RecordMap = new Map()
+RecordMap.record = {}
+
+export function Record(x={}) {
+	let map = RecordMap
+	const keys = Object.keys(x).sort()
+	for (let i = 0, len = keys.length; i < len; i++) {
+		const k = keys[i]
+		const v = x[k]
+		if (!map.has(k)) map.set(k, new Map())
+		map = map.get(k)
+		if (!map.has(v)) map.set(v, new Map())
+		map = map.get(v)
+	}
+	if (map.record === undefined)
+		map.record = x
+	return map.record
+}

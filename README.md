@@ -3571,3 +3571,71 @@ export function assert(condition, msg='Assert failed') {
 	else return condition
 }
 ```
+
+---
+
+**Tuple**
+
+Creates a tuple. Two tuples generated with the same data are guaranteed to be identical (===).
+
+```javascript index.mjs
+const TupleMap = new Map()
+TupleMap.tuple = []
+
+export function Tuple(...xs) {
+	let map = TupleMap
+	for (let i = 0, len = xs.length; i < len; i++) {
+		const x = xs[i]
+		if (!map.has(x)) map.set(x, new Map())
+		map = map.get(x)
+	}
+	if (map.tuple === undefined)
+		map.tuple = xs
+	return map.tuple
+}
+```
+
+**test**
+
+```javascript test.mjs
+Test('tuple', () => {
+	assert.equal(Tuple(1,2,3), Tuple(1,2,3))
+	assert.equal(Tuple(), Tuple())
+})
+```
+
+---
+
+Creates a record. Two records generated with the same data are guaranteed to be identical (===).
+
+**Record**
+
+```javascript index.mjs
+const RecordMap = new Map()
+RecordMap.record = {}
+
+export function Record(x={}) {
+	let map = RecordMap
+	const keys = Object.keys(x).sort()
+	for (let i = 0, len = keys.length; i < len; i++) {
+		const k = keys[i]
+		const v = x[k]
+		if (!map.has(k)) map.set(k, new Map())
+		map = map.get(k)
+		if (!map.has(v)) map.set(v, new Map())
+		map = map.get(v)
+	}
+	if (map.record === undefined)
+		map.record = x
+	return map.record
+}
+```
+
+**test**
+
+```javascript test.mjs
+Test('record', () => {
+	assert.equal(Record(), Record())
+	assert.equal(Record({ a: 1, b: 2}), Record({ b: 2, a: 1 }))
+})
+```
