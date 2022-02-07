@@ -310,7 +310,7 @@ export const has = C(inside)
 export const hasnt = C(outside)
 export const flatten = n => function* (xs) {
 	for (const x of xs)
-		if (n > 0 && isIterable(xs)) yield* flatten(n-1)(x)
+		if (n > 0 && isIterable(x)) yield* flatten(n-1)(x)
 		else yield x
 }
 export const flatten_until = f => function* (xs) {

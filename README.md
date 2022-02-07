@@ -238,6 +238,8 @@ Test('tap', () => {
 
 ---
 
+**pipe**
+
 This is a runtime implementation of pipeline. All of the following are equivalent:
 
 	x |> f |> g |> h
@@ -2254,7 +2256,7 @@ Test('naturals', () => {
 
 ---
 
-****
+**Range**
 
 Represents an interval [min, max].
 
@@ -2530,7 +2532,7 @@ Flattens an iterable of iterables `n` levels.
 ```javascript index.mjs
 export const flatten = n => function* (xs) {
 	for (const x of xs)
-		if (n > 0 && isIterable(xs)) yield* flatten(n-1)(x)
+		if (n > 0 && isIterable(x)) yield* flatten(n-1)(x)
 		else yield x
 }
 ```
