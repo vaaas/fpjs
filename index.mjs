@@ -458,6 +458,14 @@ export const cache = f => {
 	let cached = null
 	return () => cached || f().then(x => cached = Promise.resolve(x))
 }
+export const memo = f => {
+	const cache = new Map()
+	return (...xs) => {
+		const tup = tuple(...xs)
+		if (!cache.has(tup)) cache.set(tup, f(...xs))
+		return cache.get(tup)
+	}
+}
 export const next_tick = f => setTimeout(f, 0)
 export function benchmark(f, n=1e3) {
 	const now = Date.now()

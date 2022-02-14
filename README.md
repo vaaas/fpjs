@@ -3080,6 +3080,30 @@ export const cache = f => {
 }
 ```
 
+---
+
+**memo**
+
+Memoise a function, caching its output for future use for each given combination of arguments.
+
+```javascript index.mjs
+export const memo = f => {
+	const cache = new Map()
+	return (...xs) => {
+		const tup = tuple(...xs)
+		if (!cache.has(tup)) cache.set(tup, f(...xs))
+		return cache.get(tup)
+	}
+}
+```
+
+```javascript test.mjs
+Test('memo', function() {
+	const fun = memo((a, b) => [a, b])
+	assert.equal(fun(1, 2), fun(1, 2))
+})
+```
+
 # Timing
 
 Executes f in the next "tick" of the event loop.

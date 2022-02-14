@@ -601,6 +601,10 @@ Test('plist_to_alist', () => {
 	assert.deepEqual({ a: 1, b: 2 },
 		Object.fromEntries(plist_to_alist([ 'a', 1, 'b', 2 ])))
 })
+Test('memo', function() {
+	const fun = memo((a, b) => [a, b])
+	assert.equal(fun(1, 2), fun(1, 2))
+})
 
 Test('union', () => {
 	assert.deepEqual(new Set([1,2,3,4,5]), union([ new Set([1,2]), new Set([1,3]), new Set([2,3,4,5]) ]))
