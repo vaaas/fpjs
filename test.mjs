@@ -85,6 +85,7 @@ Test('pluck', () => {
 })
 Test('change', () => {
 	assert.deepEqual({ a: 1, b: 2, c: 'test'}, change(parseFloat, 'a', 'b')({ a: '1', b: '2', c: 'test'}))
+    assert.deepEqual([ { a: 1 }, { b: 2 } ], [{ a: '1'}, { b: '2' }].map(change(parseFloat)))
 })
 Test('update', () => {
 	assert.deepEqual({ a: 1, b: 2, c: 'test'}, update({ c: 'test' })({ a: 1, b: 2 }))

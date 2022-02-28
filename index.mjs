@@ -62,8 +62,8 @@ export const set = k => v => tap(o => {
 export const get_from = C(get)
 export const pluck = k => x => (x === null || x === undefined) ? null : x[k]
 export const change = (f, ...keys) => tap(x => {
-	if (keys.length === 0) keys = Object.keys(x)
-	keys.forEach(k => x[k] = f(x[k]))
+	const ks = keys.length === 0 ? Object.keys(x) : keys
+	ks.forEach(k => x[k] = f(x[k]))
 })
 export const update = (a, ...keys) => b => {
 	if (keys.length === 0) keys = Object.keys(a)
@@ -349,7 +349,7 @@ export const every = f => xs => { for (const x of xs) if (!f(x)) return false ; 
 export const some = f => xs => { for (const x of xs) if (f(x)) return true ; return false }
 export function* seq(start, end) { for (let x = start; x <= end; x++) yield x }
 export const each = f => tap(xs => { for (const x of xs) f(x) })
-export const apply = D(C(array_map))(I)(T)
+export const apply = B(map)(T)
 export const limit = n => function* (xs) {
 	let i = 0
 	for (const x of xs) {
@@ -598,4 +598,25 @@ export function record(x={}) {
 	if (map.record === undefined)
 		map.record = x
 	return map.record
+}
+function diff(a, b) {
+	const c = {}
+	for (const k of Object.keys(a)) {
+		if (!b.hasOwnProperty(k)) c[k] = undefined
+		else if (a[k] === b[k]) continue
+		else if (typeof a[k] !== typeof b[k]) c[k] = b[k]
+		else if (typeof a[k] === 'object') {
+			const sub = patch(a[k], b[k])
+			if (Object.keys(sub).length)
+				c[k] = sub
+		}
+		else c[k] = b[k]
+	}
+
+	for (const k of Object.keys(b)) {
+		if (!a.hasOwnProperty(k))
+			c[k] = b[k]
+	}
+
+	return c
 }

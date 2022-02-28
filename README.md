@@ -556,8 +556,8 @@ For example:
 
 ```javascript index.mjs
 export const change = (f, ...keys) => tap(x => {
-	if (keys.length === 0) keys = Object.keys(x)
-	keys.forEach(k => x[k] = f(x[k]))
+	const ks = keys.length === 0 ? Object.keys(x) : keys
+	ks.forEach(k => x[k] = f(x[k]))
 })
 ```
 
@@ -566,6 +566,7 @@ export const change = (f, ...keys) => tap(x => {
 ```javascript test.mjs
 Test('change', () => {
 	assert.deepEqual({ a: 1, b: 2, c: 'test'}, change(parseFloat, 'a', 'b')({ a: '1', b: '2', c: 'test'}))
+    assert.deepEqual([ { a: 1 }, { b: 2 } ], [{ a: '1'}, { b: '2' }].map(change(parseFloat)))
 })
 ```
 
@@ -2728,10 +2729,8 @@ export const each = f => tap(xs => { for (const x of xs) f(x) })
 
 **apply**
 
-given an array of functions `fs`, apply the argument `x` to each of them and return an array of `[f1(x), f2(x), f3(x)]`
-
 ```javascript index.mjs
-export const apply = D(C(array_map))(I)(T)
+export const apply = B(map)(T)
 ```
 
 ---
@@ -3664,4 +3663,34 @@ Test('record', () => {
 	assert.equal(record(), record())
 	assert.equal(record({ a: 1, b: 2}), record({ b: 2, a: 1 }))
 })
+```
+
+---
+
+**diff**
+
+create a patch that will turn object a into object b
+
+```javascript index.mjs
+function diff(a, b) {
+	const c = {}
+	for (const k of Object.keys(a)) {
+		if (!b.hasOwnProperty(k)) c[k] = undefined
+		else if (a[k] === b[k]) continue
+		else if (typeof a[k] !== typeof b[k]) c[k] = b[k]
+		else if (typeof a[k] === 'object') {
+			const sub = patch(a[k], b[k])
+			if (Object.keys(sub).length)
+				c[k] = sub
+		}
+		else c[k] = b[k]
+	}
+
+	for (const k of Object.keys(b)) {
+		if (!a.hasOwnProperty(k))
+			c[k] = b[k]
+	}
+
+	return c
+}
 ```
