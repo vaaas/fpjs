@@ -398,14 +398,14 @@ Test('waterfall', () => {
 
 ---
 
-**bind**
+**fbind**
 
 Curried implementation of `Function.prototype.bind`
 
 <https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_objects/Function/bind>
 
 ```javascript index.mjs
-export const bind = f => x => f.bind(x)
+export const fbind = f => x => f.bind(x)
 ```
 
 **Test**
@@ -414,7 +414,28 @@ export const bind = f => x => f.bind(x)
 Test('bind', () => {
 	const arr = [1,2,3]
 	const inc = x => x + 1
-	assert.deepEqual(arr.map(inc), bind(arr.map)(arr)(inc))
+	assert.deepEqual(arr.map(inc), fbind(arr.map)(arr)(inc))
+})
+```
+
+---
+
+**liftM2**
+
+```javascript index.mjs
+export const liftM2 = f => A => B => {
+	const BB = B.constructor.constructor.name === 'GeneratorFunction' ? Array.from(B) : B
+	return bind(a => bind(b => f(b)(a))(BB))(A)
+}
+```
+
+**Test**
+
+```javascript test.mjs
+Test('liftM2', function() {
+	function* Test() { yield 1; yield 2; yield 3 }
+	assert.deepEqual([2,3,4,3,4,5,4,5,6], liftM2(add)([1,2,3])([1,2,3]))
+	// assert.deepEqual([2,3,4,3,4,5,4,5,6], Array.from(liftM2(add)(Test())(Test())))
 })
 ```
 
@@ -566,7 +587,7 @@ export const change = (f, ...keys) => tap(x => {
 ```javascript test.mjs
 Test('change', () => {
 	assert.deepEqual({ a: 1, b: 2, c: 'test'}, change(parseFloat, 'a', 'b')({ a: '1', b: '2', c: 'test'}))
-    assert.deepEqual([ { a: 1 }, { b: 2 } ], [{ a: '1'}, { b: '2' }].map(change(parseFloat)))
+	assert.deepEqual([ { a: 1 }, { b: 2 } ], [{ a: '1'}, { b: '2' }].map(change(parseFloat)))
 })
 ```
 
@@ -2631,6 +2652,39 @@ Iterates over a sequence of items and returns a new sequence whose every item is
 
 ```javascript index.mjs
 export const map = f => function* (xs) { for (const x of xs) yield f(x) }
+```
+
+**Test**
+
+```javascript test.mjs
+Test('map', (function() {
+	assert.deepEqual([2,3,4], Array.from(map(add(1))([1,2,3])))
+}))
+```
+
+---
+
+**bind**
+
+Implementation of a monadic bind for iterables, arrays, and promises
+
+```javascript index.mjs
+export const bind = f => xs => {
+	if (xs.then) return xs.then(f)
+	else if (xs.flatMap) return xs.flatMap(f)
+	else return flatten(1)(map(f)(xs))
+}
+```
+
+**Test**
+
+```javascript test.mjs
+Test('bind', function() {
+	function* Test() { yield 1; yield 2; yield 3; }
+	const triples = x => [x,x,x]
+	assert.deepEqual([1,1,1,2,2,2,3,3,3], bind(triples)([1,2,3]))
+	assert.deepEqual([1,1,1,2,2,2,3,3,3], Array.from(bind(triples)(Test())))
+})
 ```
 
 ---

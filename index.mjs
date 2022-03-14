@@ -41,7 +41,11 @@ export function waterfall(...fs) {
 	const f = (...xs) => (fs[++i] || do_nothing)(f, ...xs)
 	fs[0](f)
 }
-export const bind = f => x => f.bind(x)
+export const fbind = f => x => f.bind(x)
+export const liftM2 = f => A => B => {
+	const BB = B.constructor.constructor.name === 'GeneratorFunction' ? Array.from(B) : B
+	return bind(a => bind(b => f(b)(a))(BB))(A)
+}
 export const get = (...ks) => x => {
 	if (ks.length === 1) return get_(ks[0], x)
 	else return ks.reduce(Cu(get_), x)
@@ -336,6 +340,11 @@ export const scanr = f => i => function* (xs) {
 	}
 }
 export const map = f => function* (xs) { for (const x of xs) yield f(x) }
+export const bind = f => xs => {
+	if (xs.then) return xs.then(f)
+	else if (xs.flatMap) return xs.flatMap(f)
+	else return flatten(1)(map(f)(xs))
+}
 export const filter = f => function* (xs) { for (const x of xs) if (f(x)) yield x }
 export const find = f => xs => { for (const x of xs) if (f(x)) return x ; return null }
 export const find_many = (...fs) => foldr(x => tap(xs => {

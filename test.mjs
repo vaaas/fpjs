@@ -51,7 +51,12 @@ Test('waterfall', () => {
 Test('bind', () => {
 	const arr = [1,2,3]
 	const inc = x => x + 1
-	assert.deepEqual(arr.map(inc), bind(arr.map)(arr)(inc))
+	assert.deepEqual(arr.map(inc), fbind(arr.map)(arr)(inc))
+})
+Test('liftM2', function() {
+	function* Test() { yield 1; yield 2; yield 3 }
+	assert.deepEqual([2,3,4,3,4,5,4,5,6], liftM2(add)([1,2,3])([1,2,3]))
+	// assert.deepEqual([2,3,4,3,4,5,4,5,6], Array.from(liftM2(add)(Test())(Test())))
 })
 Test('get', () => {
 	const x = [
@@ -85,7 +90,7 @@ Test('pluck', () => {
 })
 Test('change', () => {
 	assert.deepEqual({ a: 1, b: 2, c: 'test'}, change(parseFloat, 'a', 'b')({ a: '1', b: '2', c: 'test'}))
-    assert.deepEqual([ { a: 1 }, { b: 2 } ], [{ a: '1'}, { b: '2' }].map(change(parseFloat)))
+	assert.deepEqual([ { a: 1 }, { b: 2 } ], [{ a: '1'}, { b: '2' }].map(change(parseFloat)))
 })
 Test('update', () => {
 	assert.deepEqual({ a: 1, b: 2, c: 'test'}, update({ c: 'test' })({ a: 1, b: 2 }))
@@ -565,6 +570,15 @@ Test('flatten_until', () => {
 		Array.from(
 		flatten_until(x => typeof x === 'number')
 			([ 1, [ [ [ 2 ], 3 ] ] ])))
+})
+Test('map', (function() {
+	assert.deepEqual([2,3,4], Array.from(map(add(1))([1,2,3])))
+}))
+Test('bind', function() {
+	function* Test() { yield 1; yield 2; yield 3; }
+	const triples = x => [x,x,x]
+	assert.deepEqual([1,1,1,2,2,2,3,3,3], bind(triples)([1,2,3]))
+	assert.deepEqual([1,1,1,2,2,2,3,3,3], Array.from(bind(triples)(Test())))
 })
 Test('find_many', () => {
 	const xs = [0, 1, 2, 3, 4, 5]
