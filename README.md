@@ -411,7 +411,7 @@ export const fbind = f => x => f.bind(x)
 **Test**
 
 ```javascript test.mjs
-Test('bind', () => {
+Test('fbind', () => {
 	const arr = [1,2,3]
 	const inc = x => x + 1
 	assert.deepEqual(arr.map(inc), fbind(arr.map)(arr)(inc))
@@ -1212,20 +1212,111 @@ You can provide multiple functions `fs` which will group `xs` on several levels,
 export const group = (...fs) => xs => {
 	if (fs.length === 0) return xs
 	else {
-		const groups = group_(first(fs), xs)
+		const groups = group_(first(fs), xs, I)
 		for (const k of Object.keys(groups))
 			groups[k] = group(...tail(fs))(groups[k])
 		return groups
 	}
 }
 
-const group_ = (f, xs) =>
+const group_ = (f, xs, map) =>
 	foldr(x => tap(groups => {
 		const g = f(x)
 		if (!groups.hasOwnProperty(g)) groups[g] = []
-		groups[g].push(x)
+		groups[g].push(map(x))
 	}))({})(xs)
 ```
+
+**Test**
+
+```javascript test.mjs
+Test('group', () => {
+	const arr = [
+		{ colour: 'red', size: 'm', logo: true },
+		{ colour: 'red', size: 'l', logo: true },
+		{ colour: 'blue', size: 'm', logo: true },
+		{ colour: 'blue', size: 'l', logo: true },
+		{ colour: 'blue', size: 's', logo: true },
+		{ colour: 'blue', size: 's', logo: false },
+	]
+
+	assert.deepEqual(
+		{
+			'red': {
+				'm': {
+					'true': [arr[0]],
+				},
+
+				'l': {
+					'true': [arr[1]],
+				},
+			},
+
+			'blue': {
+				'm': {
+					'true': [arr[2]],
+				},
+				'l': {
+					'true': [arr[3]],
+				},
+				's': {
+					'true': [arr[4]],
+					'false': [arr[5]],
+				},
+			},
+		},
+		group(pluck('colour'), pluck('size'), pluck('logo'))(arr)
+	)
+})
+```
+
+---
+
+**groupMap**
+
+```javascript index.mjs
+export const groupMap = (map, ...fs) => xs => {
+	if (fs.length === 0) return xs
+	else {
+		const groups = group_(first(fs), xs, fs.length === 1 ? map : I)
+		for (const k of Object.keys(groups))
+			groups[k] = groupMap(map, ...tail(fs))(groups[k])
+		return groups
+	}
+}
+```
+
+**Test**
+
+```javascript test.mjs
+Test('groupMap', () => {
+	const arr = [
+		{ colour: 'red', size: 'm', price: 1 },
+		{ colour: 'red', size: 'l', price: 2 },
+		{ colour: 'blue', size: 'm', price: 1 },
+		{ colour: 'blue', size: 'l', price: 2 },
+		{ colour: 'blue', size: 's', price: 0.5 },
+	]
+
+	assert.deepEqual(
+		{
+			'red': {
+				'm': [1],
+				'l': [2],
+			},
+
+			'blue': {
+				'm': [1],
+				'l': [2],
+				's': [0.5],
+			},
+		},
+		groupMap(get('price'), pluck('colour'), pluck('size'))(arr)
+	)
+})
+```
+
+---
 
 **Test**
 

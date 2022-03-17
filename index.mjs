@@ -125,19 +125,28 @@ export function swap (xs, a, b) {
 export const group = (...fs) => xs => {
 	if (fs.length === 0) return xs
 	else {
-		const groups = group_(first(fs), xs)
+		const groups = group_(first(fs), xs, I)
 		for (const k of Object.keys(groups))
 			groups[k] = group(...tail(fs))(groups[k])
 		return groups
 	}
 }
 
-const group_ = (f, xs) =>
+const group_ = (f, xs, map) =>
 	foldr(x => tap(groups => {
 		const g = f(x)
 		if (!groups.hasOwnProperty(g)) groups[g] = []
-		groups[g].push(x)
+		groups[g].push(map(x))
 	}))({})(xs)
+export const groupMap = (map, ...fs) => xs => {
+	if (fs.length === 0) return xs
+	else {
+		const groups = group_(first(fs), xs, fs.length === 1 ? map : I)
+		for (const k of Object.keys(groups))
+			groups[k] = groupMap(map, ...tail(fs))(groups[k])
+		return groups
+	}
+}
 export const partition = (...fs) => foldr(x => tap(xs => {
 	const i = fs.findIndex(T(x))
 	if (i !== -1) xs[i].push(x)

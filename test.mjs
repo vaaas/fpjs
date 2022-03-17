@@ -48,7 +48,7 @@ Test('waterfall', () => {
 		(f, x) => assert.equal(10, x)
 	)
 })
-Test('bind', () => {
+Test('fbind', () => {
 	const arr = [1,2,3]
 	const inc = x => x + 1
 	assert.deepEqual(arr.map(inc), fbind(arr.map)(arr)(inc))
@@ -216,6 +216,69 @@ Test('objectify', () => {
 })
 Test('swap', () => {
 	assert.deepEqual([2,1], swap([1,2], 0, 1))
+})
+Test('group', () => {
+	const arr = [
+		{ colour: 'red', size: 'm', logo: true },
+		{ colour: 'red', size: 'l', logo: true },
+		{ colour: 'blue', size: 'm', logo: true },
+		{ colour: 'blue', size: 'l', logo: true },
+		{ colour: 'blue', size: 's', logo: true },
+		{ colour: 'blue', size: 's', logo: false },
+	]
+
+	assert.deepEqual(
+		{
+			'red': {
+				'm': {
+					'true': [arr[0]],
+				},
+
+				'l': {
+					'true': [arr[1]],
+				},
+			},
+
+			'blue': {
+				'm': {
+					'true': [arr[2]],
+				},
+				'l': {
+					'true': [arr[3]],
+				},
+				's': {
+					'true': [arr[4]],
+					'false': [arr[5]],
+				},
+			},
+		},
+		group(pluck('colour'), pluck('size'), pluck('logo'))(arr)
+	)
+})
+Test('groupMap', () => {
+	const arr = [
+		{ colour: 'red', size: 'm', price: 1 },
+		{ colour: 'red', size: 'l', price: 2 },
+		{ colour: 'blue', size: 'm', price: 1 },
+		{ colour: 'blue', size: 'l', price: 2 },
+		{ colour: 'blue', size: 's', price: 0.5 },
+	]
+
+	assert.deepEqual(
+		{
+			'red': {
+				'm': [1],
+				'l': [2],
+			},
+
+			'blue': {
+				'm': [1],
+				'l': [2],
+				's': [0.5],
+			},
+		},
+		groupMap(get('price'), pluck('colour'), pluck('size'))(arr)
+	)
 })
 Test('group', () => {
 	const arr = [
