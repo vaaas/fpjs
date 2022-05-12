@@ -3354,9 +3354,32 @@ export function debounce(f, n=300) {
 }
 ```
 
-**Test**
+---
 
-```javascript test.mjs
+**throttle**
+
+Implements throttling. Execute f with the received event, but only at most one time per n milliseconds.
+
+```javascript index.mjs
+export function throttle(f, n=300) {
+    let i = undefined
+    let has_next = false
+    let next = undefined
+    return function(x) {
+        if (i) {
+            has_next = true
+            next = x
+        } else {
+            f(x)
+            i = setTimeout(() => {
+                if (has_next) f(next)
+                i = undefined
+                has_next = false
+                next = undefined
+            }, n)
+        }
+    }
+}
 ```
 
 # Sets
